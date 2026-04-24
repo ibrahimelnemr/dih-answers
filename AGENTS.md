@@ -5,6 +5,35 @@ This is a Django + React project.
 Prioritize clean, maintainable code and practical software engineering best practices.
 Avoid overengineering. Prefer simple, explicit solutions.
 
+## Software engineering principles
+Apply these principles as practical guidelines, not rigid dogma.
+
+### Foundational
+- **DRY** (Don't Repeat Yourself) — Every piece of knowledge should have a single, authoritative representation. Avoid copy-pasting logic; extract shared behavior.
+- **KISS** (Keep It Simple, Stupid) — Prefer the simplest solution that solves the problem. Complexity should be justified.
+- **YAGNI** (You Aren't Gonna Need It) — Do not build features, abstractions, or infrastructure until there is a concrete need.
+
+### SOLID
+- **Single Responsibility** — A module, class, or function should have one reason to change.
+- **Open/Closed** — Code should be open for extension but closed for modification. Prefer adding new behavior over editing existing working code when practical.
+- **Liskov Substitution** — Subtypes should be usable wherever their parent type is expected without breaking behavior.
+- **Interface Segregation** — Prefer small, focused interfaces over large, do-everything ones.
+- **Dependency Inversion** — Depend on abstractions, not concretions. High-level modules should not depend on low-level details directly.
+
+### Code quality
+- **Separation of Concerns** — Keep distinct responsibilities in distinct modules/layers.
+- **Principle of Least Surprise** — Code should behave as readers and callers expect.
+- **Fail Fast** — Surface errors early and explicitly rather than letting bad state propagate.
+- **Composition over Inheritance** — Prefer composing small, focused pieces over deep inheritance hierarchies.
+- **Explicit over Implicit** — Favor clarity and transparency over cleverness and magic.
+- **Encapsulation** — Hide implementation details; expose clean, minimal interfaces.
+- **Law of Demeter** — Talk to immediate collaborators, not their internals. Avoid long chains like `a.b.c.d`.
+
+### Pragmatic engineering
+- **Readability first** — Code is read far more than it is written. Optimize for the reader.
+- **Optimize with evidence** — Write clear code first; optimize only when profiling shows a real bottleneck.
+- **Boy Scout Rule** — Leave code a little better than you found it, but stay within the scope of the task.
+
 ## Working style (important)
 - Think before acting:
   - Inspect relevant files first.
