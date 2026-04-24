@@ -14,64 +14,44 @@ After each task that modifies the database (migrations, seed data, data changes)
 
 ## Backup location
 - **Directory**: `backups/` in the project root (gitignored)
-- **Naming**: `{YYYY-MM-DD}_{HH-MM}_{description}.sql`
-  - Example: `2026-04-24_11-30_post-seed.sql`
+- **Naming**: `{YYYY-MM-DD}_{HH-MM}_{description}.json`
+  - Example: `2026-04-24_14-56_post-seed.json`
 
 ## How to run
 
-### Important: Free-tier limitation
-Render free-tier PostgreSQL does **not** allow external connections. The `pg_dump` commands below only work if on a paid plan with external access enabled. On the free tier, backups are not possible from your local machine.
-
-For free-tier, the best alternative is to include a dump step in the Dockerfile CMD temporarily (similar to the seed approach), piping output to stdout, then capturing it from Render service logs.
-
-### Prerequisites (paid plan only)
-- The `.env` file must have the **external** Render DB hostname (ending in `.oregon-postgres.render.com`).
-- `pg_dump` must be available locally (install via `brew install postgresql` if needed).
-
-### Backup command
-Read the DB credentials from `.env` and run `pg_dump`:
+### Method 1: Backup script (works on free tier)
+The backup script uses the admin SQL console API to dump all tables as JSON. No direct DB connection needed.
 
 ```bash
 # From the project root
+python3 scripts/backup_render_db.py <description>
+```
+
+Example:
+```bash
+python3 scripts/backup_render_db.py post-deploy
+python3 scripts/backup_render_db.py pre-migration
+```
+
+The script:
+- Reads admin credentials from `.env` (DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_PASSWORD)
+- Logs in via the auth API
+- Dumps all tables (auth_user, taxonomy_category, taxonomy_tag, qa_question, qa_answer, etc.) via the `/api/sql` endpoint
+- Saves a timestamped JSON file to `backups/`
+
+### Method 2: pg_dump (paid Render plan only)
+If on a paid plan with external DB access:
+
+```bash
 source <(grep -E '^DB_(NAME|USER|PASSWORD|HOST|PORT)=' .env | sed 's/^/export /')
-
 mkdir -p backups
-
 PGPASSWORD="$DB_PASSWORD" pg_dump \
-  -h "$DB_HOST" \
-  -U "$DB_USER" \
-  -p "$DB_PORT" \
-  -d "$DB_NAME" \
-  --no-owner \
-  --no-privileges \
-  -F c \
+  -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -d "$DB_NAME" \
+  --no-owner --no-privileges -F c \
   -f "backups/$(date +%Y-%m-%d_%H-%M)_description.sql"
 ```
 
-Replace `description` in the filename with a short slug describing the state (e.g. `post-seed`, `pre-migration`, `post-deploy`).
-
-### Verify the backup
-```bash
-pg_restore --list backups/<filename>.sql | head -20
-```
-
-## Restore (if needed)
-```bash
-source <(grep -E '^DB_(NAME|USER|PASSWORD|HOST|PORT)=' .env | sed 's/^/export /')
-
-PGPASSWORD="$DB_PASSWORD" pg_restore \
-  -h "$DB_HOST" \
-  -U "$DB_USER" \
-  -p "$DB_PORT" \
-  -d "$DB_NAME" \
-  --no-owner \
-  --no-privileges \
-  --clean \
-  --if-exists \
-  backups/<filename>.sql
-```
-
 ## Notes
-- Use `-F c` (custom format) for efficient, restorable backups.
 - The `backups/` directory is gitignored — backups are local only.
-- On free-tier Render Postgres, there are no automatic backups, so these local backups are the safety net.
+- On free-tier Render Postgres, external connections are not available. Use the script (Method 1).
+- The JSON backup contains all table data and can be used to reconstruct the DB state.
