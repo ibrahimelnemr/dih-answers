@@ -20,4 +20,4 @@ RUN poetry run python manage.py collectstatic --noinput 2>/dev/null || true
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "poetry run python manage.py migrate --noinput && poetry run python manage.py initadmin && poetry run python manage.py seed_data && poetry run gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"]
+CMD ["sh", "-c", "poetry run python manage.py migrate --noinput && poetry run python manage.py initadmin && poetry run gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"]

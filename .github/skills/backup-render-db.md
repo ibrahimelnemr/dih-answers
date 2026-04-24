@@ -19,8 +19,13 @@ After each task that modifies the database (migrations, seed data, data changes)
 
 ## How to run
 
-### Prerequisites
-- The `.env` file must have the external Render DB credentials active.
+### Important: Free-tier limitation
+Render free-tier PostgreSQL does **not** allow external connections. The `pg_dump` commands below only work if on a paid plan with external access enabled. On the free tier, backups are not possible from your local machine.
+
+For free-tier, the best alternative is to include a dump step in the Dockerfile CMD temporarily (similar to the seed approach), piping output to stdout, then capturing it from Render service logs.
+
+### Prerequisites (paid plan only)
+- The `.env` file must have the **external** Render DB hostname (ending in `.oregon-postgres.render.com`).
 - `pg_dump` must be available locally (install via `brew install postgresql` if needed).
 
 ### Backup command

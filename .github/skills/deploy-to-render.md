@@ -139,7 +139,8 @@ curl https://<frontend>.onrender.com/health
 ## Gotchas
 
 - **Free-tier cold starts**: First request after idle may take 30-60 seconds. Use `--connect-timeout 30 --max-time 60` when curling.
-- **Internal vs external DB host**: Use the **internal** hostname (`dpg-xxx-a`) for the `DB_HOST` env var on Render services (same project). Use the external hostname (`dpg-xxx-a.oregon-postgres.render.com`) only for local development or external access.
+- **Internal vs external DB host**: Use the **internal** hostname (`dpg-xxx-a`) for the `DB_HOST` env var on Render services (same project). The external hostname (`dpg-xxx-a.oregon-postgres.render.com`) is only available on paid Postgres plans. Free-tier does not support external connections.
+- **Free-tier limitations**: No external DB access, no SSH into services. To run management commands (seed_data, etc.), temporarily add them to the Dockerfile CMD and deploy. See the `seed-render-db` skill.
 - **nginx variable escaping**: The frontend `nginx.conf` uses `${BACKEND_URL}` for envsubst but also has native nginx variables like `$uri`, `$host`, `$remote_addr`. The entrypoint script only substitutes the two explicit vars to avoid clobbering nginx vars.
 - **Poetry lock must be committed**: Render builds from the repo; if `poetry.lock` is out of date with `pyproject.toml`, the build will fail.
 - **No docker-compose on Render**: Each service builds independently from its own `Dockerfile` within its `rootDir`. There is no `docker-compose.yml` in the repo.
