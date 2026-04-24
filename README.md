@@ -25,6 +25,33 @@ Internal Django + React project for DIH Champions.
 
 ## Local setup
 
+### Database (PostgreSQL via Docker)
+
+Run PostgreSQL in a Docker container with a named volume so data persists across restarts:
+
+```bash
+docker run --name dih-answers \
+  -e POSTGRES_DB=dih-answers \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 5432:5432 \
+  -v dih-answers-data:/var/lib/postgresql/data \
+  postgres:16
+```
+
+This runs in the foreground — use `Ctrl+C` to stop. To restart later:
+
+```bash
+docker start -a dih-answers
+```
+
+If you need to recreate the container (data is kept in the `dih-answers-data` volume):
+
+```bash
+docker rm dih-answers
+# then re-run the docker run command above
+```
+
 ### Backend
 ```bash
 cd backend
