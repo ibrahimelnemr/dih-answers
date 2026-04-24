@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthContext";
 import AppLayout from "./components/AppLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminSQLPage from "./pages/AdminSQLPage";
 import AskQuestionPage from "./pages/AskQuestionPage";
 import LoginPage from "./pages/LoginPage";
 import QuestionDetailPage from "./pages/QuestionDetailPage";
@@ -26,6 +27,7 @@ export default function App() {
           <Route index element={<QuestionsPage />} />
           <Route path="questions/:id" element={<QuestionDetailPage />} />
           <Route path="ask" element={<AskQuestionPage />} />
+          <Route path="admin/sql" element={<AdminSQLPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

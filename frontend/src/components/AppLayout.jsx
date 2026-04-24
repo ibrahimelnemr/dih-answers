@@ -9,6 +9,7 @@ export default function AppLayout() {
   const navLinks = [
     { to: "/", label: "Questions" },
     { to: "/ask", label: "Ask" },
+    ...(user?.is_staff ? [{ to: "/admin/sql", label: "SQL Console" }] : []),
   ];
 
   return (

@@ -26,6 +26,20 @@ class CategoryFlatSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "slug", "parent_id", "is_leaf", "is_active", "full_path", "depth")
 
 
+class CategoryWriteSerializer(serializers.ModelSerializer):
+    parent_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        source="parent",
+        required=False,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = Category
+        fields = ("id", "name", "parent_id", "description", "is_active")
+        read_only_fields = ("id",)
+
+
 class TagSerializer(serializers.ModelSerializer):
     path = serializers.SerializerMethodField()
 
@@ -40,3 +54,17 @@ class TagSerializer(serializers.ModelSerializer):
             parts.append(current.name)
             current = current.parent
         return " / ".join(reversed(parts))
+
+
+class TagWriteSerializer(serializers.ModelSerializer):
+    parent_id = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        source="parent",
+        required=False,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = Tag
+        fields = ("id", "name", "parent_id", "is_active")
+        read_only_fields = ("id",)
