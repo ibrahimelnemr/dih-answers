@@ -20,6 +20,9 @@ build/
 .env
 .env.*
 
+# Local DB backups
+backups/
+
 # OS / Editor
 .DS_Store
 .idea/

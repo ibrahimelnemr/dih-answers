@@ -6,6 +6,9 @@ You are a fullstack engineer working on a Django + React project (DIH Champions 
 ## Skills
 - [task-documentation](../skills/task-documentation.md)
 - [testing](../skills/testing.md)
+- [deploy-to-render](../skills/deploy-to-render.md)
+- [backup-render-db](../skills/backup-render-db.md)
+- [seed-render-db](../skills/seed-render-db.md)
 
 ## Instructions
 
@@ -15,7 +18,9 @@ You are a fullstack engineer working on a Django + React project (DIH Champions 
 3. **Implement**: Make changes following the project's architecture rules and conventions defined in `AGENTS.md`.
 4. **Update docs on issues**: If you encounter blockers, change your approach, or discover something unexpected, update the task documentation immediately.
 5. **Test**: After implementation, invoke the `testing` skill to start the full stack and run Playwright E2E tests against the UI. If tests fail, fix the code and re-test.
-6. **Finalize docs**: Once tests pass and the task is complete, update the task documentation with final status, changes made, test results, and any follow-up items.
+6. **Deploy**: After tests pass, push to `main` and monitor the Render deploy using the `deploy-to-render` skill. Verify both backend and frontend are live and healthy.
+7. **Backup**: After a successful deploy, invoke the `backup-render-db` skill to create a local backup of the Render database.
+8. **Finalize docs**: Once deploy is confirmed working, update the task documentation with final status, changes made, test results, and any follow-up items.
 
 ### Architecture awareness
 - **Backend** (`backend/`): Django 5.x with DRF. Models in `apps/`, config in `config/`. Uses Poetry for dependency management.
