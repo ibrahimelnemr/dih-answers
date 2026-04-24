@@ -69,3 +69,16 @@ export function logout() {
 export function me() {
   return request("/auth/me");
 }
+
+export async function checkBackendHealth() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(`${API_BASE}/health`, { signal: controller.signal });
+    return res.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}

@@ -4,7 +4,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
 export default function LoginPage() {
-  const { isAuthenticated, signIn, signUp, setError, error } = useAuth();
+  const { isAuthenticated, signIn, signUp, setError, error, backendReady } = useAuth();
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [submitting, setSubmitting] = useState(false);
@@ -17,6 +17,7 @@ export default function LoginPage() {
   }
 
   const isSignUp = mode === "signup";
+  const backendStarting = backendReady === false || backendReady === null;
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -44,6 +45,17 @@ export default function LoginPage() {
           <p className="text-slate-400 mt-1">Internal knowledge platform</p>
         </div>
 
+        {backendStarting ? (
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl text-center">
+            <div className="flex justify-center mb-4">
+              <div className="animate-spin w-10 h-10 border-4 border-blue-400/30 border-t-blue-400 rounded-full" />
+            </div>
+            <h2 className="text-lg font-semibold text-white mb-2">Starting up the server...</h2>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              The backend is waking up from sleep. This usually takes 30–60 seconds on the free tier. Please wait.
+            </p>
+          </div>
+        ) : (
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
           <div className="flex mb-6 bg-white/5 rounded-lg p-1">
             <button
@@ -133,6 +145,7 @@ export default function LoginPage() {
             </button>
           </form>
         </div>
+        )}
       </div>
     </div>
   );
