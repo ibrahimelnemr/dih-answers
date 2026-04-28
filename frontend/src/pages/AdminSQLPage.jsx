@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import BACKEND_URL from "../data/Data";
+import { BACKEND_URL } from "../data/Data";
 
 function getCookie(name) {
   const cookieValue = `; ${document.cookie}`;
