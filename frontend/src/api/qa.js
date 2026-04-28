@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE || "";
+import BACKEND_URL from "../data/Data";
 
 function getCookie(name) {
   const cookieValue = `; ${document.cookie}`;
@@ -21,7 +21,7 @@ async function request(path, options = {}) {
     headers["X-CSRFToken"] = csrfToken;
   }
 
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(`${BACKEND_URL}${path}`, {
     credentials: "include",
     headers,
     ...options,

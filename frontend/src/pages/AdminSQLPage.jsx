@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "";
+import BACKEND_URL from "../data/Data";
 
 function getCookie(name) {
   const cookieValue = `; ${document.cookie}`;
@@ -27,7 +27,7 @@ export default function AdminSQLPage() {
 
     try {
       const csrfToken = getCookie("csrftoken");
-      const response = await fetch(`${API_BASE}/api/sql`, {
+      const response = await fetch(`${BACKEND_URL}/api/sql`, {
         method: "POST",
         credentials: "include",
         headers: {

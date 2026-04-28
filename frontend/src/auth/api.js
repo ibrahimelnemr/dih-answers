@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE || "";
+import BACKEND_URL from "../data/Data";
 
 function getCookie(name) {
   const cookieValue = `; ${document.cookie}`;
@@ -21,7 +21,7 @@ async function request(path, options = {}) {
     headers["X-CSRFToken"] = csrfToken;
   }
 
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(`${BACKEND_URL}${path}`, {
     credentials: "include",
     headers,
     ...options,
@@ -74,7 +74,7 @@ export async function checkBackendHealth() {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(`${API_BASE}/health`, { signal: controller.signal });
+    const res = await fetch(`${BACKEND_URL}/health`, { signal: controller.signal });
     return res.ok;
   } catch {
     return false;
