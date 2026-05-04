@@ -1,11 +1,12 @@
 from django.contrib.auth import login, logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
-from rest_framework import permissions, status
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import LoginSerializer, MeSerializer, RegisterSerializer
+from .models import UserProfile
+from .serializers import LoginSerializer, MeSerializer, RegisterSerializer, UserProfileSerializer
 
 
 class RegisterView(APIView):
@@ -51,3 +52,11 @@ class MeView(APIView):
 
     def get(self, request):
         return Response(MeSerializer.from_user(request.user), status=status.HTTP_200_OK)
+
+
+class LeaderboardView(generics.ListAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        return UserProfile.objects.select_related("user").order_by("-reputation")

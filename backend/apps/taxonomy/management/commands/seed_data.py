@@ -4,14 +4,27 @@ from __future__ import annotations
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
+from apps.accounts.models import UserProfile
 from apps.qa.models import Answer, Question
 from apps.taxonomy.models import Category
 
 User = get_user_model()
 
-OFFERINGS = ["customer", "internal", "cloud", "ai-data"]
+OFFERINGS = ["general", "office", "customer", "internal", "cloud", "ai-data"]
 
 SPECIALIZATIONS: dict[str, list[str]] = {
+    "general": [
+        "company-culture",
+        "policies",
+        "guidance",
+        "best-practices",
+    ],
+    "office": [
+        "facilities",
+        "equipment",
+        "software-tools",
+        "remote-work",
+    ],
     "customer": [
         "fullstack-development",
         "backend-development",
@@ -113,6 +126,16 @@ def _display(slug: str) -> str:
 
 SAMPLE_QUESTIONS: list[dict] = [
     {
+        "category_slug": "general.company-culture",
+        "title": "How does the company handle work-life balance?",
+        "body": "I'm new to the company and want to understand the policies around remote work and flexible hours.",
+    },
+    {
+        "category_slug": "office.facilities",
+        "title": "How to book a conference room?",
+        "body": "I need to schedule a meeting room for next week. What's the process?",
+    },
+    {
         "category_slug": "customer.fullstack-development.react",
         "title": "Best practices for React state management in customer portals?",
         "body": (
@@ -204,6 +227,12 @@ SAMPLE_QUESTIONS: list[dict] = [
 ]
 
 SAMPLE_ANSWERS: dict[str, list[str]] = {
+    "How does the company handle work-life balance?": [
+        "The company offers flexible hours and remote work options. Check the HR portal for the latest policies.",
+    ],
+    "How to book a conference room?": [
+        "Use the office booking system at bookings.company.com or check the shared calendar.",
+    ],
     "Best practices for React state management in customer portals?": [
         (
             "For 50+ routes with real-time data, I'd recommend Zustand over Redux. "
@@ -259,15 +288,30 @@ class Command(BaseCommand):
         if options["clear"]:
             self.stdout.write("Clearing existing data...")
             Question.objects.all().delete()
-            Category.objects.all().delete()
+            Answer.objects.all().delete()
+            # Delete categories from deepest level up
+            while Category.objects.exists():
+                leaf_categories = Category.objects.filter(children__isnull=True)
+                if not leaf_categories.exists():
+                    break
+                leaf_categories.delete()
+            Category.objects.all().delete()  # In case of cycles or something
 
         # --- Create categories ---
         created_count = 0
+        descriptions = {
+            "general": "General questions about company policies, culture, and guidance.",
+            "office": "Questions about office facilities, equipment, and remote work.",
+            "customer": "Questions related to customer-facing products and services.",
+            "internal": "Questions about internal tools, processes, and infrastructure.",
+            "cloud": "Questions about cloud architecture, migration, and operations.",
+            "ai-data": "Questions about AI, machine learning, and data engineering.",
+        }
         for offering in OFFERINGS:
             root, c = Category.objects.get_or_create(
                 name=_display(offering),
                 parent=None,
-                defaults={"description": f"Questions related to {_display(offering)} offerings."},
+                defaults={"description": descriptions.get(offering, f"Questions related to {_display(offering)}.")},
             )
             if c:
                 created_count += 1
@@ -308,6 +352,16 @@ class Command(BaseCommand):
         if not responder.has_usable_password():
             responder.set_password("helper1234")
             responder.save()
+
+        # Create profiles
+        UserProfile.objects.get_or_create(user=demo_user, defaults={"bio": "Demo user", "reputation": 10})
+        UserProfile.objects.get_or_create(user=responder, defaults={"bio": "Helpful responder", "reputation": 50})
+
+        # Assign patrons
+        general_cat = Category.objects.get(slug="general")
+        office_cat = Category.objects.get(slug="office")
+        general_cat.patrons.add(demo_user)
+        office_cat.patrons.add(responder)
 
         # --- Create sample questions ---
         q_created = 0

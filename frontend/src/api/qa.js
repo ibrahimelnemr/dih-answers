@@ -117,3 +117,7 @@ export function createAnswerComment(answerId, body) {
     body: JSON.stringify({ body }),
   });
 }
+
+export function fetchLeaderboard() {
+  return request("/auth/leaderboard");
+}

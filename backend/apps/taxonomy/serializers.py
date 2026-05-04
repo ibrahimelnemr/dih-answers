@@ -8,14 +8,18 @@ from .models import Category, Tag
 class CategorySerializer(serializers.ModelSerializer):
     full_path = serializers.CharField(read_only=True)
     children = serializers.SerializerMethodField()
+    patrons = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
-        fields = ("id", "name", "slug", "parent_id", "is_leaf", "is_active", "description", "full_path", "depth", "children")
+        fields = ("id", "name", "slug", "parent_id", "is_leaf", "is_active", "description", "full_path", "depth", "children", "patrons")
 
     def get_children(self, obj: Category) -> list[dict]:
         children = obj.children.filter(is_active=True).order_by("name")
         return CategorySerializer(children, many=True).data
+
+    def get_patrons(self, obj: Category) -> list[dict]:
+        return [{"id": p.id, "username": p.username} for p in obj.patrons.all()]
 
 
 class CategoryFlatSerializer(serializers.ModelSerializer):

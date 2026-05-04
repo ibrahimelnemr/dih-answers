@@ -30,6 +30,12 @@ class Category(TimeStampedModel):
     )
     is_active = models.BooleanField(default=True)
     description = models.TextField(blank=True, default="")
+    patrons = models.ManyToManyField(
+        User,
+        related_name="patron_categories",
+        blank=True,
+        help_text="Users who are patrons of this category.",
+    )
 
     class Meta:
         ordering = ("slug",)

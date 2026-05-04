@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 
+from .models import UserProfile
+
 User = get_user_model()
 
 
@@ -56,3 +58,25 @@ class MeSerializer(serializers.Serializer):
             "last_name": user.last_name,
             "is_staff": user.is_staff,
         }
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source="user.username", read_only=True)
+    questions_count = serializers.SerializerMethodField()
+    answers_count = serializers.SerializerMethodField()
+    votes_received = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserProfile
+        fields = ("bio", "reputation", "username", "questions_count", "answers_count", "votes_received")
+
+    def get_questions_count(self, obj):
+        return obj.user.questions.count()
+
+    def get_answers_count(self, obj):
+        return obj.user.answers.count()
+
+    def get_votes_received(self, obj):
+        question_votes = sum(q.votes.count() for q in obj.user.questions.all())
+        answer_votes = sum(a.votes.count() for a in obj.user.answers.all())
+        return question_votes + answer_votes

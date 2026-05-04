@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
           if (ok) {
             clearInterval(pollTimer);
             setBackendReady(true);
+            await ensureCsrfToken();
             // Re-run auth bootstrap now that backend is up
             try {
               await ensureCsrfToken();
@@ -45,6 +46,7 @@ export function AuthProvider({ children }) {
       }
 
       setBackendReady(true);
+      await ensureCsrfToken();
       try {
         await ensureCsrfToken();
         const currentUser = await me();

@@ -28,25 +28,25 @@ test.describe("Full Stack Smoke Tests", () => {
   });
 
   test("can log in as admin", async ({ page }) => {
-    await login(page, "admin", "admin");
+    await login(page, "demo", "demo1234");
     // Should see Questions nav link
     await expect(page.locator('a:has-text("Questions")')).toBeVisible({ timeout: 10000 });
     // Admin user should see their username in header
-    await expect(page.locator("header")).toContainText("admin");
+    await expect(page.locator("header")).toContainText("demo");
   });
 
   test("questions page shows seeded questions", async ({ page }) => {
-    await login(page, "admin", "admin");
+    await login(page, "demo", "demo1234");
     // Should see at least some question titles from seed data
     await expect(
-      page.locator("text=Best practices for React state management")
+      page.locator("text=How does the company handle work-life balance?")
     ).toBeVisible({ timeout: 15000 });
   });
 
   test("can navigate to question detail", async ({ page }) => {
-    await login(page, "admin", "admin");
+    await login(page, "demo", "demo1234");
     // Click on a question link
-    await page.click("text=Best practices for React state management");
+    await page.click("text=How does the company handle work-life balance?");
     // Should see answer form heading on detail page
     await expect(page.getByRole("heading", { name: "Your Answer" })).toBeVisible({ timeout: 10000 });
   });
