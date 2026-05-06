@@ -17,12 +17,14 @@ class CategoryTreeView(generics.ListAPIView):
     """Returns root categories with nested children."""
     queryset = Category.objects.filter(is_active=True, parent__isnull=True).order_by("name")
     serializer_class = CategorySerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class CategoryListView(generics.ListAPIView):
     """Returns all categories flat."""
     queryset = Category.objects.filter(is_active=True).order_by("slug")
     serializer_class = CategoryFlatSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class CategoryCreateView(generics.CreateAPIView):
