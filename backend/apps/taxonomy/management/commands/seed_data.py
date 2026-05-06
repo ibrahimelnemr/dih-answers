@@ -568,9 +568,11 @@ class Command(BaseCommand):
                     "is_staff": user_data.get("is_staff", False),
                 },
             )
-            if not user.has_usable_password() or created:
-                user.set_password(user_data["password"])
-                user.save()
+            # Always ensure password matches seed data
+            user.set_password(user_data["password"])
+            user.email = user_data["email"]
+            user.is_staff = user_data.get("is_staff", False)
+            user.save()
             UserProfile.objects.get_or_create(
                 user=user,
                 defaults={"bio": user_data["bio"], "reputation": user_data["reputation"]},
