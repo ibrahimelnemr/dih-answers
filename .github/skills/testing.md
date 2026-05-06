@@ -68,6 +68,12 @@ cd frontend && pnpm exec playwright test
 ## On success
 - Note the passing tests in the task documentation.
 - Stop the dev servers.
+- Push commits to `main` branch.
+- Wait for Render auto-deploy to complete.
+- Verify both backend and frontend are live and healthy by checking:
+  - `https://dih-answers-backend.onrender.com/health` returns `{"status":"ok"}`
+  - `https://dih-answers-frontend.onrender.com/health` returns `{"status":"ok"}`
+- Test the deployed frontend at `https://dih-answers-frontend.onrender.com/` with admin/admin credentials.
 - Mark the task as complete.
 
 ## Rules

@@ -124,17 +124,22 @@ After deploy, confirm:
 
 ```bash
 # Backend health
-curl https://<backend>.onrender.com/health
+curl https://dih-answers-backend.onrender.com/health
 # Expected: {"status":"ok"}
 
 # Frontend serves SPA
-curl -s -o /dev/null -w "%{http_code}" https://<frontend>.onrender.com/
+curl -s -o /dev/null -w "%{http_code}" https://dih-answers-frontend.onrender.com/
 # Expected: 200
 
 # Frontend proxies API through to backend
-curl https://<frontend>.onrender.com/health
+curl https://dih-answers-frontend.onrender.com/health
 # Expected: {"status":"ok"}
 ```
+
+Test the deployed application:
+- Visit `https://dih-answers-frontend.onrender.com/`
+- Sign in with username `admin` and password `admin`
+- Verify you can access questions, categories, and leaderboard features
 
 ## Gotchas
 
