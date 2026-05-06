@@ -82,3 +82,18 @@ cd frontend && pnpm exec playwright test
 - Always stop dev servers after testing is complete (clean up background processes).
 - If Playwright is not yet installed in the project, install it as a dev dependency before running tests.
 - Keep tests focused and readable. One test per behavior, not monolithic test files.
+
+## Render Deployment Testing
+
+After pushing to `main`, always verify the deployed application:
+
+1. **Wait for deploy**: Render auto-deploys from `main`. Check deploy status via the Render dashboard or API.
+2. **Health checks**:
+   ```bash
+   curl --max-time 60 https://dih-answers-backend.onrender.com/health
+   curl --max-time 60 https://dih-answers-frontend.onrender.com/health
+   ```
+   Both should return `{"status":"ok"}`. First request may take 30-60s due to free-tier cold starts.
+3. **Manual verification**: Open `https://dih-answers-frontend.onrender.com/` in a browser, sign in with `admin`/`admin`, and verify features work.
+4. **Key architecture note**: The frontend uses relative URLs for API calls (empty `BACKEND_URL`). Nginx on the frontend container proxies API routes to the backend. This ensures session cookies (which are `SameSite=Lax`) work correctly since all requests stay same-origin.
+5. **Never** set `BACKEND_URL` in `frontend/src/data/Data.ts` to a cross-origin URL in production — it breaks session authentication.

@@ -47,3 +47,10 @@ Apply these as practical guidelines in every task:
 - Always invoke `task-documentation` at the start, during (on issues), and at the end of every task.
 - Always invoke `testing` before marking a task complete for any user-facing changes.
 - Never mark a task as done if E2E tests are failing.
+
+### Render deployment verification
+- After pushing to `main`, wait for Render auto-deploy to complete.
+- Verify health endpoints: `https://dih-answers-backend.onrender.com/health` and `https://dih-answers-frontend.onrender.com/health`.
+- Test the deployed frontend at `https://dih-answers-frontend.onrender.com/` — sign in with `admin`/`admin` and verify features work.
+- The frontend uses relative URLs (`BACKEND_URL = ""`) so API requests go through the same-origin nginx proxy. Never change this to a cross-origin URL.
+- Free-tier cold starts can take 30-60 seconds. Use `--max-time 60` when curling health endpoints.
