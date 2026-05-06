@@ -75,7 +75,8 @@ export async function checkBackendHealth() {
   const timeoutId = setTimeout(() => controller.abort(), 10000);
   try {
     const res = await fetch(`${BACKEND_URL}/health`, { signal: controller.signal });
-    return res.ok;
+    // Any response (even 429/5xx) means the backend is reachable
+    return res.status < 500;
   } catch {
     return false;
   } finally {

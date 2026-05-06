@@ -22,15 +22,13 @@ export function AuthProvider({ children }) {
         setBackendReady(false);
         setLoading(false);
 
-        // Poll every 3 seconds until backend is up
+        // Poll every 5 seconds until backend is up
         pollTimer = setInterval(async () => {
           const ok = await checkBackendHealth();
           if (cancelled) return;
           if (ok) {
             clearInterval(pollTimer);
             setBackendReady(true);
-            await ensureCsrfToken();
-            // Re-run auth bootstrap now that backend is up
             try {
               await ensureCsrfToken();
               const currentUser = await me();
@@ -41,12 +39,11 @@ export function AuthProvider({ children }) {
               if (!cancelled) setLoading(false);
             }
           }
-        }, 3000);
+        }, 5000);
         return;
       }
 
       setBackendReady(true);
-      await ensureCsrfToken();
       try {
         await ensureCsrfToken();
         const currentUser = await me();
