@@ -87,13 +87,32 @@ cd frontend && pnpm exec playwright test
 
 After pushing to `main`, always verify the deployed application:
 
-1. **Wait for deploy**: Render auto-deploys from `main`. Check deploy status via the Render dashboard or API.
+1. **Wait for deploy**: Render auto-deploys from `main`. Check deploy status by polling the JS bundle hash:
+   ```bash
+   curl --max-time 30 -s https://dih-answers-frontend.onrender.com/ | grep -o 'src="/assets/[^"]*\.js"'
+   ```
+   When the hash changes from the previous value, the new build is live.
 2. **Health checks**:
    ```bash
    curl --max-time 60 https://dih-answers-backend.onrender.com/health
    curl --max-time 60 https://dih-answers-frontend.onrender.com/health
    ```
    Both should return `{"status":"ok"}`. First request may take 30-60s due to free-tier cold starts.
-3. **Manual verification**: Open `https://dih-answers-frontend.onrender.com/` in a browser, sign in with `admin`/`admin`, and verify features work.
-4. **Key architecture note**: The frontend uses relative URLs for API calls (empty `BACKEND_URL`). Nginx on the frontend container proxies API routes to the backend. This ensures session cookies (which are `SameSite=Lax`) work correctly since all requests stay same-origin.
-5. **Never** set `BACKEND_URL` in `frontend/src/data/Data.ts` to a cross-origin URL in production — it breaks session authentication.
+3. **Browser verification (VS Code built-in browser — preferred)**:
+   Use the `open_browser_page` tool to open `https://dih-answers-frontend.onrender.com/` directly. Then use `type_in_page` and `click_element` to sign in with `admin`/`admin`. Use `read_page` to inspect the DOM state and `run_playwright_code` to execute JS in the page (e.g. checking network requests via `performance.getEntriesByType('resource')`). This is the **primary** testing method.
+4. **curl-based API testing (secondary)**:
+   ```bash
+   # Get CSRF token
+   curl --max-time 30 -s -c /tmp/cookies.txt https://dih-answers-backend.onrender.com/auth/csrf
+   # Login
+   curl --max-time 30 -s -c /tmp/cookies.txt -b /tmp/cookies.txt -X POST \
+     -H "Content-Type: application/json" \
+     -H "X-CSRFToken: <token>" -H "Cookie: csrftoken=<token>" \
+     -d '{"username":"admin","password":"admin"}' \
+     https://dih-answers-backend.onrender.com/auth/login
+   # Fetch data
+   curl --max-time 30 -s -b /tmp/cookies.txt https://dih-answers-backend.onrender.com/questions
+   ```
+5. **Key architecture note**: The frontend uses relative URLs for API calls (empty `BACKEND_URL`). Nginx on the frontend container proxies API routes to the backend. This ensures session cookies (which are `SameSite=Lax`) work correctly since all requests stay same-origin.
+6. **Never** set `BACKEND_URL` in `frontend/src/data/Data.ts` to a cross-origin URL in production — it breaks session authentication.
+7. **Rate limiting**: Render free tier may return 429 (Too Many Requests) if polled too frequently. The frontend health-check treats any non-5xx response as "backend alive" to avoid triggering an infinite polling loop.
