@@ -118,8 +118,9 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-# Email / SMTP settings (Mailpit for dev/staging)
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# Email / SMTP settings (Mailpit HTTP API for dev/staging)
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "apps.core.email_backend.MailpitHTTPBackend")
+MAILPIT_API_URL = os.environ.get("MAILPIT_API_URL", "https://mailpit-o5ht.onrender.com")
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "mailpit-o5ht.onrender.com")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "1025"))
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "False").lower() in ("true", "1", "yes")
