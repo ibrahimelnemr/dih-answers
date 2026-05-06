@@ -4,6 +4,7 @@ from .views import (
     CategoryCreateView,
     CategoryDetailView,
     CategoryListView,
+    CategoryPatronView,
     CategoryTreeView,
     TagCreateView,
     TagDetailView,
@@ -18,4 +19,5 @@ urlpatterns = [
     path("categories/tree", CategoryTreeView.as_view(), name="category-tree"),
     path("categories/create", CategoryCreateView.as_view(), name="category-create"),
     path("categories/<int:pk>", CategoryDetailView.as_view(), name="category-detail"),
+    path("categories/<int:pk>/patrons", CategoryPatronView.as_view(), name="category-patrons"),
 ]

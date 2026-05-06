@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.db.models import Count
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import generics, permissions, status
@@ -59,4 +60,11 @@ class LeaderboardView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        return UserProfile.objects.select_related("user").order_by("-reputation")
+        return (
+            UserProfile.objects.select_related("user")
+            .annotate(
+                answer_count=Count("user__answers", distinct=True),
+                upvotes_received=Count("user__answers__votes", distinct=True),
+            )
+            .order_by("-reputation")
+        )

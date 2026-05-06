@@ -4,6 +4,13 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.core.notifications import (
+    notify_answer_accepted,
+    notify_answer_upvote,
+    notify_new_answer,
+    notify_question_upvote,
+)
+
 from .models import (
     Answer,
     AnswerComment,
@@ -135,10 +142,12 @@ class AnswerCreateView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        question = self.get_question()
         answer = serializer.save(
-            question=self.get_question(),
+            question=question,
             created_by=request.user,
         )
+        notify_new_answer(question, answer)
         response_serializer = AnswerSerializer(answer, context=self.get_serializer_context())
         return Response(response_serializer.data, status=201)
 
@@ -178,6 +187,7 @@ class AnswerVoteView(APIView):
         if not created:
             return Response({"detail": "You already upvoted this answer."}, status=status.HTTP_400_BAD_REQUEST)
 
+        notify_answer_upvote(answer, request.user)
         serializer = AnswerSerializer(answer, context={"request": request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -197,6 +207,7 @@ class AcceptAnswerView(APIView):
             answer.is_accepted = True
             answer.save(update_fields=["is_accepted", "updated_at"])
 
+        notify_answer_accepted(answer)
         response_serializer = AnswerSerializer(answer)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -217,5 +228,6 @@ class QuestionVoteView(APIView):
         if not created:
             return Response({"detail": "You already upvoted this question."}, status=status.HTTP_400_BAD_REQUEST)
 
+        notify_question_upvote(question, request.user)
         serializer = QuestionSerializer(question, context={"request": request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -65,10 +65,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     questions_count = serializers.SerializerMethodField()
     answers_count = serializers.SerializerMethodField()
     votes_received = serializers.SerializerMethodField()
+    patron_categories = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
-        fields = ("bio", "reputation", "username", "questions_count", "answers_count", "votes_received")
+        fields = ("bio", "reputation", "username", "questions_count", "answers_count", "votes_received", "patron_categories")
 
     def get_questions_count(self, obj):
         return obj.user.questions.count()
@@ -80,3 +81,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         question_votes = sum(q.votes.count() for q in obj.user.questions.all())
         answer_votes = sum(a.votes.count() for a in obj.user.answers.all())
         return question_votes + answer_votes
+
+    def get_patron_categories(self, obj):
+        return list(obj.user.patron_categories.values_list("name", flat=True))
