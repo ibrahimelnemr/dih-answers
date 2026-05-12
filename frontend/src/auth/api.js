@@ -72,7 +72,7 @@ export function me() {
 
 export async function checkBackendHealth() {
   try {
-    const res = await fetch("https://dih-answers-backend.onrender.com/health", {
+    const res = await fetch(`${BACKEND_URL}/health`, {
       method: "GET",
     });
     return res.status === 200;
