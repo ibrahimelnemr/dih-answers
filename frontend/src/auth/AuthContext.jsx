@@ -16,12 +16,17 @@ export function AuthProvider({ children }) {
     async function bootstrap() {
       try {
         await ensureCsrfToken();
-        const currentUser = await me();
-        if (!cancelled) {
-          setBackendReady(true);
-          setUser(currentUser);
+        // CSRF succeeded → backend is up
+        if (!cancelled) setBackendReady(true);
+        try {
+          const currentUser = await me();
+          if (!cancelled) setUser(currentUser);
+        } catch {
+          // 403 = not logged in, that's expected
+          if (!cancelled) setUser(null);
         }
       } catch {
+        // Network error or backend truly down
         if (!cancelled) {
           setBackendReady(false);
           setUser(null);
