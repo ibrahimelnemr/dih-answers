@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from apps.core.notifications import (
     notify_answer_accepted,
     notify_answer_upvote,
+    notify_champions_new_question,
     notify_new_answer,
     notify_question_upvote,
 )
@@ -87,6 +88,7 @@ class QuestionListCreateView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         question = serializer.save()
+        notify_champions_new_question(question)
         response_serializer = QuestionSerializer(question, context=self.get_serializer_context())
         return Response(response_serializer.data, status=201)
 

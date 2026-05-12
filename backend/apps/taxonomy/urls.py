@@ -19,5 +19,5 @@ urlpatterns = [
     path("categories/tree", CategoryTreeView.as_view(), name="category-tree"),
     path("categories/create", CategoryCreateView.as_view(), name="category-create"),
     path("categories/<int:pk>", CategoryDetailView.as_view(), name="category-detail"),
-    path("categories/<int:pk>/patrons", CategoryPatronView.as_view(), name="category-patrons"),
+    path("categories/<int:pk>/patron", CategoryPatronView.as_view(), name="category-patron"),
 ]

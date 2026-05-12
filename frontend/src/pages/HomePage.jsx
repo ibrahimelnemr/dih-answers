@@ -1,150 +1,203 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { fetchCategoryTree, fetchLeaderboard } from "../api/qa";
+import { fetchCategoryTree, fetchLeaderboard, togglePatron } from "../api/qa";
+import { useAuth } from "../auth/AuthContext";
 
 const CATEGORY_ICONS = {
-  general: "💬",
-  office: "🏢",
   customer: "👥",
   internal: "🔧",
   cloud: "☁️",
   "ai-data": "🤖",
 };
 
-function TopicCard({ category }) {
+function CategoryCard({ category, currentUser, onTogglePatron }) {
   const icon = CATEGORY_ICONS[category.slug] || "📂";
-  const childCount = category.children ? category.children.length : 0;
+  const isPatron = category.patrons?.some((p) => p.username === currentUser?.username);
 
   return (
-    <Link
-      to={`/questions?category=${category.slug}`}
-      className="block bg-white border border-gray-200 rounded-xl p-6 hover:border-blue-300 hover:shadow-md transition-all group"
-    >
-      <div className="flex items-start gap-3">
-        <span className="text-2xl">{icon}</span>
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-blue-700 group-hover:text-blue-800 mb-1">
-            {category.name}
-          </h3>
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-            {category.description || "Explore questions in this topic."}
-          </p>
-          {childCount > 0 && (
-            <div className="text-xs text-gray-400 mb-2">
-              {childCount} subtopic{childCount !== 1 ? "s" : ""}
-            </div>
-          )}
-          {category.patrons && category.patrons.length > 0 && (
-            <div className="flex items-center gap-1 flex-wrap">
-              <span className="text-xs text-amber-600 font-medium">🏅 Patrons:</span>
-              {category.patrons.map((p) => (
-                <span
-                  key={p.username}
-                  className="inline-block text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200"
-                >
-                  {p.username}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+    <div className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between mb-3">
+        <Link
+          to={`/questions?category=${category.slug}`}
+          className="flex items-center gap-2 text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors"
+        >
+          <span className="text-xl">{icon}</span>
+          {category.name}
+        </Link>
+        <button
+          type="button"
+          onClick={() => onTogglePatron(category.id)}
+          className={`px-3 py-1 text-xs font-medium rounded-full border transition-all shrink-0 ${
+            isPatron
+              ? "bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100"
+              : "bg-gray-50 text-gray-500 border-gray-200 hover:border-blue-300 hover:text-blue-600"
+          }`}
+          title={isPatron ? "Leave as patron" : "Become a patron"}
+        >
+          {isPatron ? "★ Patron" : "☆ Become Patron"}
+        </button>
       </div>
-    </Link>
-  );
-}
 
-function LeaderboardRow({ profile, rank }) {
-  const medals = ["🥇", "🥈", "🥉"];
-  const rankDisplay = rank <= 3 ? medals[rank - 1] : `#${rank}`;
+      {category.description && (
+        <p className="text-sm text-gray-500 mb-3">{category.description}</p>
+      )}
 
-  return (
-    <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-bold w-8 text-center">{rankDisplay}</span>
-        <div>
-          <span className="text-sm font-semibold text-gray-800">{profile.username}</span>
-          {profile.patron_categories && profile.patron_categories.length > 0 && (
-            <span className="ml-2 text-xs text-amber-600">🏅 patron</span>
-          )}
+      {/* Subcategories */}
+      {category.children?.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {category.children.map((child) => (
+            <Link
+              key={child.id}
+              to={`/questions?category=${child.slug}`}
+              className="px-2.5 py-1 text-xs rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+            >
+              {child.name}
+            </Link>
+          ))}
         </div>
-      </div>
-      <div className="flex items-center gap-3 text-xs text-gray-500">
-        <span title="Reputation" className="font-medium text-blue-600">{profile.reputation} rep</span>
-        <span title="Questions asked">{profile.questions_count} Q</span>
-        <span title="Answers given">{profile.answers_count} A</span>
-        <span title="Votes received">⬆ {profile.votes_received}</span>
-      </div>
+      )}
+
+      {/* Patrons */}
+      {category.patrons?.length > 0 && (
+        <div className="flex items-center gap-1.5 text-xs text-gray-400 flex-wrap">
+          <span className="text-amber-600 font-medium">🏅 Patrons:</span>
+          {category.patrons.map((p) => (
+            <Link
+              key={p.id}
+              to={`/users/${p.username}`}
+              className="text-blue-500 hover:text-blue-700"
+            >
+              {p.username}
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [categories, setCategories] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadData = () => {
+    Promise.all([fetchCategoryTree(), fetchLeaderboard()])
+      .then(([cats, lb]) => {
+        setCategories(cats);
+        setLeaderboard(lb);
+      })
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    fetchCategoryTree().then(setCategories).catch(console.error);
-    fetchLeaderboard().then(setLeaderboard).catch(console.error);
+    loadData();
   }, []);
 
-  const topCategories = categories.filter(cat => !cat.parent_id);
+  const handleTogglePatron = async (categoryId) => {
+    try {
+      await togglePatron(categoryId);
+      const cats = await fetchCategoryTree();
+      setCategories(cats);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="animate-spin w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
-      {/* Hero section */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-8 text-white">
-        <h1 className="text-2xl font-bold mb-2">DIH Answers</h1>
+      {/* Hero */}
+      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white">
+        <h1 className="text-3xl font-bold mb-2">Welcome to DIH Champions</h1>
         <p className="text-blue-100 text-lg mb-4">
-          Your team's knowledge base. Ask questions, share expertise, and help each other grow.
+          Ask questions, share knowledge, and become a patron of your expertise areas.
         </p>
         <div className="flex gap-3">
           <Link
-            to="/questions"
-            className="inline-block bg-white text-blue-700 font-medium px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors"
-          >
-            Browse Questions
-          </Link>
-          <Link
             to="/ask"
-            className="inline-block bg-blue-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-blue-400 transition-colors border border-blue-400"
+            className="px-5 py-2.5 bg-white text-blue-700 font-semibold rounded-lg hover:bg-blue-50 transition-colors"
           >
             Ask a Question
           </Link>
+          <Link
+            to="/questions"
+            className="px-5 py-2.5 bg-blue-500 bg-opacity-30 text-white font-semibold rounded-lg hover:bg-opacity-50 transition-colors border border-blue-400"
+          >
+            Browse Questions
+          </Link>
         </div>
       </section>
 
-      {/* Topics grid */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Topics</h2>
-          <span className="text-sm text-gray-500">{topCategories.length} topics</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Categories */}
+        <div className="lg:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Explore Categories</h2>
+            <span className="text-sm text-gray-500">{categories.length} categories</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {categories.map((cat) => (
+              <CategoryCard
+                key={cat.id}
+                category={cat}
+                currentUser={user}
+                onTogglePatron={handleTogglePatron}
+              />
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {topCategories.map((category) => (
-            <TopicCard key={category.id} category={category} />
-          ))}
-        </div>
-      </section>
 
-      {/* Leaderboard */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">🏆 Leaderboard</h2>
-          <span className="text-sm text-gray-500">Top contributors</span>
+        {/* Leaderboard */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">🏆 Leaderboard</h2>
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            {leaderboard.length === 0 ? (
+              <p className="p-4 text-sm text-gray-400">No users yet.</p>
+            ) : (
+              <div className="divide-y divide-gray-100">
+                {leaderboard.slice(0, 10).map((entry, index) => (
+                  <Link
+                    key={entry.username}
+                    to={`/users/${entry.username}`}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                  >
+                    <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                      index === 0 ? "bg-amber-100 text-amber-700" :
+                      index === 1 ? "bg-gray-200 text-gray-700" :
+                      index === 2 ? "bg-orange-100 text-orange-700" :
+                      "bg-gray-100 text-gray-500"
+                    }`}>
+                      {index + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-gray-900 truncate">{entry.username}</div>
+                      {entry.patron_categories?.length > 0 && (
+                        <div className="text-xs text-amber-600 truncate">
+                          🏅 {entry.patron_categories.join(", ")}
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-bold text-gray-900">{entry.reputation}</div>
+                      <div className="text-xs text-gray-400">rep</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
-          {leaderboard.length === 0 ? (
-            <p className="text-sm text-gray-500 text-center py-4">No contributors yet.</p>
-          ) : (
-            <div>
-              {leaderboard.slice(0, 10).map((profile, index) => (
-                <LeaderboardRow key={profile.username} profile={profile} rank={index + 1} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

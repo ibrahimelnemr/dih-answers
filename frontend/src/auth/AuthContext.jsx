@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
         setBackendReady(false);
         setLoading(false);
 
-        // Poll every 5 seconds until backend is up
+        // Poll every 30 seconds until backend returns 200
         pollTimer = setInterval(async () => {
           const ok = await checkBackendHealth();
           if (cancelled) return;
@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
               if (!cancelled) setLoading(false);
             }
           }
-        }, 5000);
+        }, 30000);
         return;
       }
 

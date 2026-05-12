@@ -10,6 +10,7 @@ export default function AskQuestionPage() {
   const [selectedTags, setSelectedTags] = useState([]);
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -37,11 +38,11 @@ export default function AskQuestionPage() {
     setLoading(true);
     setError("");
     try {
-      const payload = { title, body };
+      const payload = { title, body, is_anonymous: isAnonymous };
       if (selectedCategoryId) payload.category_id = Number(selectedCategoryId);
       if (selectedTags.length) payload.tag_ids = selectedTags;
       await createQuestion(payload);
-      navigate("/");
+      navigate("/questions");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -137,6 +138,21 @@ export default function AskQuestionPage() {
             {error}
           </p>
         )}
+
+        <div className="bg-white border border-gray-200 rounded-xl p-6">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isAnonymous}
+              onChange={(e) => setIsAnonymous(e.target.checked)}
+              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <div>
+              <span className="text-sm font-semibold text-gray-900">Post anonymously</span>
+              <p className="text-xs text-gray-500">Your name will not be shown with this question</p>
+            </div>
+          </label>
+        </div>
 
         <div className="flex justify-end">
           <button

@@ -1,4 +1,4 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Count
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 
 from .models import UserProfile
 from .serializers import LoginSerializer, MeSerializer, RegisterSerializer, UserProfileSerializer
+
+User = get_user_model()
 
 
 class RegisterView(APIView):
@@ -68,3 +70,47 @@ class LeaderboardView(generics.ListAPIView):
             )
             .order_by("-reputation")
         )
+
+
+class UserProfileDetailView(APIView):
+    """Public user profile with questions, answers, and patron categories."""
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+
+        # Get questions (exclude anonymous)
+        questions = list(
+            user.questions.filter(is_anonymous=False)
+            .select_related("category")
+            .order_by("-created_at")[:20]
+            .values("id", "title", "created_at", "status")
+        )
+
+        # Get answers (exclude anonymous)
+        answers = list(
+            user.answers.filter(is_anonymous=False)
+            .select_related("question")
+            .order_by("-created_at")[:20]
+            .values("id", "question__id", "question__title", "created_at", "is_accepted")
+        )
+
+        patron_categories = list(
+            user.patron_categories.values("id", "name", "slug")
+        )
+
+        return Response({
+            "username": user.username,
+            "bio": profile.bio,
+            "reputation": profile.reputation,
+            "questions_count": user.questions.count(),
+            "answers_count": user.answers.count(),
+            "patron_categories": patron_categories,
+            "questions": questions,
+            "answers": answers,
+        })

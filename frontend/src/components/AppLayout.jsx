@@ -7,7 +7,8 @@ export default function AppLayout() {
   const location = useLocation();
 
   const navLinks = [
-    { to: "/", label: "Questions" },
+    { to: "/", label: "Home", exact: true },
+    { to: "/questions", label: "Questions" },
     { to: "/ask", label: "Ask" },
     ...(user?.is_staff ? [{ to: "/admin/sql", label: "SQL Console" }] : []),
   ];
@@ -29,7 +30,7 @@ export default function AppLayout() {
 
               <nav className="hidden sm:flex items-center gap-1">
                 {navLinks.map((link) => {
-                  const isActive = link.to === "/" ? location.pathname === "/" : location.pathname.startsWith(link.to);
+                  const isActive = link.exact ? location.pathname === link.to : location.pathname.startsWith(link.to);
                   return (
                     <Link
                       key={link.to}

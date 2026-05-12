@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { fetchCategoryTree, fetchQuestions, fetchTags } from "../api/qa";
 
@@ -105,7 +105,11 @@ function QuestionCard({ question }) {
                 </span>
               ))}
             </div>
-            <span className="text-xs text-gray-400">by {question.created_by}</span>
+            <span className="text-xs text-gray-400">
+              by {question.created_by === "Anonymous" ? "Anonymous" : (
+                <Link to={`/users/${question.created_by}`} className="text-blue-500 hover:text-blue-700" onClick={(e) => e.stopPropagation()}>{question.created_by}</Link>
+              )}
+            </span>
           </div>
         </div>
       </div>
@@ -114,9 +118,10 @@ function QuestionCard({ question }) {
 }
 
 export default function QuestionsPage() {
+  const [searchParams] = useSearchParams();
   const [questions, setQuestions] = useState([]);
   const [categoryTree, setCategoryTree] = useState([]);
-  const [selectedCategorySlug, setSelectedCategorySlug] = useState(null);
+  const [selectedCategorySlug, setSelectedCategorySlug] = useState(searchParams.get("category") || null);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

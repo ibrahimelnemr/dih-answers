@@ -71,15 +71,12 @@ export function me() {
 }
 
 export async function checkBackendHealth() {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(`${BACKEND_URL}/health`, { signal: controller.signal });
-    // Any response (even 429/5xx) means the backend is reachable
-    return res.status < 500;
+    const res = await fetch("https://dih-answers-backend.onrender.com/health", {
+      method: "GET",
+    });
+    return res.status === 200;
   } catch {
     return false;
-  } finally {
-    clearTimeout(timeoutId);
   }
 }

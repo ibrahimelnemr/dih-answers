@@ -30,6 +30,7 @@ export default function QuestionDetailPage() {
   const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [answerBody, setAnswerBody] = useState("");
+  const [answerAnonymous, setAnswerAnonymous] = useState(false);
   const [commentBody, setCommentBody] = useState("");
   const [answerComments, setAnswerComments] = useState({});
   const [submittingAnswer, setSubmittingAnswer] = useState(false);
@@ -51,8 +52,9 @@ export default function QuestionDetailPage() {
     if (!answerBody.trim()) return;
     setSubmittingAnswer(true);
     try {
-      await createAnswer(id, answerBody);
+      await createAnswer(id, answerBody, answerAnonymous);
       setAnswerBody("");
+      setAnswerAnonymous(false);
       reload();
     } catch (err) {
       alert(err.message);
@@ -138,7 +140,7 @@ export default function QuestionDetailPage() {
     <div className="max-w-4xl mx-auto">
       {/* Breadcrumb */}
       <nav className="mb-4">
-        <Link to="/" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+        <Link to="/questions" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
           ← Back to Questions
         </Link>
       </nav>
@@ -169,7 +171,11 @@ export default function QuestionDetailPage() {
             <h1 className="text-xl font-bold text-gray-900 mb-2">{question.title}</h1>
 
             <div className="flex items-center gap-3 text-sm text-gray-500 mb-4">
-              <span>Asked by <span className="font-medium text-gray-700">{question.created_by}</span></span>
+              <span>Asked by {question.created_by === "Anonymous" ? (
+                <span className="font-medium text-gray-700">Anonymous</span>
+              ) : (
+                <Link to={`/users/${question.created_by}`} className="font-medium text-blue-600 hover:text-blue-800">{question.created_by}</Link>
+              )}</span>
               <span>·</span>
               <span>{timeAgo(question.created_at)}</span>
               <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -299,7 +305,11 @@ export default function QuestionDetailPage() {
                 </div>
 
                 <div className="mt-3 text-sm text-gray-500">
-                  Answered by <span className="font-medium text-gray-700">{answer.created_by}</span>
+                  Answered by {answer.created_by === "Anonymous" ? (
+                    <span className="font-medium text-gray-700">Anonymous</span>
+                  ) : (
+                    <Link to={`/users/${answer.created_by}`} className="font-medium text-blue-600 hover:text-blue-800">{answer.created_by}</Link>
+                  )}
                   {answer.created_at && <span> · {timeAgo(answer.created_at)}</span>}
                 </div>
 
@@ -350,7 +360,16 @@ export default function QuestionDetailPage() {
             placeholder="Write your answer here..."
             className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
           />
-          <div className="mt-3 flex justify-end">
+          <div className="mt-3 flex items-center justify-between">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={answerAnonymous}
+                onChange={(e) => setAnswerAnonymous(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-600">Post anonymously</span>
+            </label>
             <button
               type="submit"
               disabled={submittingAnswer || !answerBody.trim()}

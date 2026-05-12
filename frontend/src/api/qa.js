@@ -79,10 +79,10 @@ export function createQuestion(payload) {
   });
 }
 
-export function createAnswer(questionId, body) {
+export function createAnswer(questionId, body, isAnonymous = false) {
   return request(`/questions/${questionId}/answers`, {
     method: "POST",
-    body: JSON.stringify({ body }),
+    body: JSON.stringify({ body, is_anonymous: isAnonymous }),
   });
 }
 
@@ -120,4 +120,14 @@ export function createAnswerComment(answerId, body) {
 
 export function fetchLeaderboard() {
   return request("/auth/leaderboard");
+}
+
+export function togglePatron(categoryId) {
+  return request(`/categories/${categoryId}/patron`, {
+    method: "POST",
+  });
+}
+
+export function fetchUserProfile(username) {
+  return request(`/auth/users/${username}`);
 }

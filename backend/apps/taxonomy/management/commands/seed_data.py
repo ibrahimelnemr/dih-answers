@@ -10,24 +10,9 @@ from apps.taxonomy.models import Category
 
 User = get_user_model()
 
-OFFERINGS = ["general", "office", "customer", "internal", "cloud", "ai-data"]
+OFFERINGS = ["customer", "internal", "cloud", "ai-data"]
 
 SPECIALIZATIONS: dict[str, list[str]] = {
-    "general": [
-        "company-culture",
-        "policies",
-        "guidance",
-        "best-practices",
-        "onboarding",
-        "joining-projects",
-    ],
-    "office": [
-        "facilities",
-        "equipment",
-        "software-tools",
-        "remote-work",
-        "office-events",
-    ],
     "customer": [
         "fullstack-development",
         "backend-development",
@@ -128,80 +113,6 @@ def _display(slug: str) -> str:
 
 
 SAMPLE_QUESTIONS: list[dict] = [
-    # General / Non-technical
-    {
-        "category_slug": "general.company-culture",
-        "title": "How does the company handle work-life balance?",
-        "body": "I'm new to the company and want to understand the policies around remote work and flexible hours.",
-        "author": "alice",
-    },
-    {
-        "category_slug": "general.onboarding",
-        "title": "What should I do during my first week?",
-        "body": "Starting next Monday — any checklist or tips for getting set up quickly?",
-        "author": "newbie",
-    },
-    {
-        "category_slug": "general.onboarding",
-        "title": "Who do I talk to about getting access to internal repos?",
-        "body": "I've been here two days and still can't clone the main monorepo. Who grants access?",
-        "author": "newbie",
-    },
-    {
-        "category_slug": "general.joining-projects",
-        "title": "How to find a project to join as a new hire?",
-        "body": "I finished onboarding but haven't been assigned a project yet. What's the process for joining one?",
-        "author": "alice",
-    },
-    {
-        "category_slug": "general.joining-projects",
-        "title": "Can I switch projects after 6 months?",
-        "body": "I've been on my current project for 8 months and want to explore something new. Is rotation encouraged?",
-        "author": "bob",
-    },
-    {
-        "category_slug": "general.policies",
-        "title": "What's the PTO policy for new employees?",
-        "body": "How many days of PTO do we get in the first year? Do unused days carry over?",
-        "author": "newbie",
-    },
-    {
-        "category_slug": "general.best-practices",
-        "title": "Tips for giving effective code reviews?",
-        "body": "I just became a reviewer on my team. Any advice for giving constructive, actionable feedback?",
-        "author": "charlie",
-    },
-    # Office
-    {
-        "category_slug": "office.facilities",
-        "title": "How to book a conference room?",
-        "body": "I need to schedule a meeting room for next week. What's the process?",
-        "author": "demo",
-    },
-    {
-        "category_slug": "office.equipment",
-        "title": "Can I get a standing desk?",
-        "body": "My back hurts from sitting all day. What's the process for requesting a standing desk or ergonomic setup?",
-        "author": "alice",
-    },
-    {
-        "category_slug": "office.software-tools",
-        "title": "Which IDE license does the company provide?",
-        "body": "I saw some people using IntelliJ and others using VS Code. Does the company pay for IDE licenses?",
-        "author": "newbie",
-    },
-    {
-        "category_slug": "office.remote-work",
-        "title": "Best practices for staying productive while remote?",
-        "body": "I'm fully remote and sometimes struggle with focus. Any tips from other remote folks?",
-        "author": "bob",
-    },
-    {
-        "category_slug": "office.office-events",
-        "title": "When is the next team social?",
-        "body": "Are there regular team events or socials? I'd like to meet more people across teams.",
-        "author": "alice",
-    },
     # Technical - Customer
     {
         "category_slug": "customer.fullstack-development.react",
@@ -236,6 +147,12 @@ SAMPLE_QUESTIONS: list[dict] = [
         "category_slug": "customer.backend-development",
         "title": "How to handle background jobs in a customer-facing API?",
         "body": "We have long-running report generation. Should we use Celery, Django-Q, or something else?",
+        "author": "charlie",
+    },
+    {
+        "category_slug": "customer.devops",
+        "title": "Tips for giving effective code reviews?",
+        "body": "I just became a reviewer on my team. Any advice for giving constructive, actionable feedback?",
         "author": "charlie",
     },
     # Technical - Internal
@@ -356,25 +273,6 @@ SAMPLE_QUESTIONS: list[dict] = [
 ]
 
 SAMPLE_ANSWERS: dict[str, list[dict]] = {
-    "How does the company handle work-life balance?": [
-        {"body": "The company offers flexible hours and remote work options. Check the HR portal for the latest policies.", "author": "helper"},
-        {"body": "Most teams also do 'no-meeting Fridays' which really helps with deep work.", "author": "bob"},
-    ],
-    "What should I do during my first week?": [
-        {"body": "Check your onboarding Notion page — it has a day-by-day checklist. Also set up 1:1s with your team lead and buddy.", "author": "helper"},
-    ],
-    "How to find a project to join as a new hire?": [
-        {"body": "Talk to your manager — there's a staffing board updated weekly. You can also browse open roles on the internal mobility portal.", "author": "charlie"},
-    ],
-    "Can I switch projects after 6 months?": [
-        {"body": "Yes! Rotation is encouraged. Talk to your manager and the project lead of the team you're interested in. Most transfers happen quarterly.", "author": "helper"},
-    ],
-    "How to book a conference room?": [
-        {"body": "Use the office booking system at bookings.company.com or check the shared calendar.", "author": "helper"},
-    ],
-    "Can I get a standing desk?": [
-        {"body": "Yes! Submit a request through the facilities portal. They usually deliver within a week.", "author": "helper"},
-    ],
     "Best practices for React state management in customer portals?": [
         {
             "body": (
@@ -463,9 +361,6 @@ SAMPLE_ANSWERS: dict[str, list[dict]] = {
             "author": "bob",
         },
     ],
-    "What's the PTO policy for new employees?": [
-        {"body": "20 days/year starting from day 1. Unused days carry over up to 5 days. Check the HR handbook for details.", "author": "helper"},
-    ],
     "How do teams track technical debt here?": [
         {"body": "Most teams use a 'tech-debt' label in Jira/Linear and dedicate 20% of each sprint to addressing it. Some teams do quarterly 'fix-it weeks'.", "author": "charlie"},
     ],
@@ -486,8 +381,8 @@ DEMO_USERS = [
 
 # Patron assignments (username -> list of category slugs)
 PATRON_ASSIGNMENTS = {
-    "helper": ["general", "office"],
-    "alice": ["customer.frontend-development", "general.company-culture"],
+    "helper": ["customer", "internal"],
+    "alice": ["customer.frontend-development"],
     "bob": ["cloud", "internal.devops"],
     "charlie": ["customer.fullstack-development", "ai-data.genai-development"],
     "eve": ["internal.security", "ai-data.machine-learning"],
@@ -521,8 +416,7 @@ class Command(BaseCommand):
         # --- Create categories ---
         created_count = 0
         descriptions = {
-            "general": "General questions about company policies, culture, and guidance.",
-            "office": "Questions about office facilities, equipment, and remote work.",
+
             "customer": "Questions related to customer-facing products and services.",
             "internal": "Questions about internal tools, processes, and infrastructure.",
             "cloud": "Questions about cloud architecture, migration, and operations.",

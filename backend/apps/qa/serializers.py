@@ -22,7 +22,7 @@ class CategorySummarySerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
-    created_by = serializers.CharField(source="created_by.username", read_only=True)
+    created_by = serializers.SerializerMethodField()
     vote_count = serializers.IntegerField(source="votes.count", read_only=True)
     has_upvoted = serializers.SerializerMethodField()
 
@@ -34,12 +34,18 @@ class AnswerSerializer(serializers.ModelSerializer):
             "question",
             "created_by",
             "is_accepted",
+            "is_anonymous",
             "created_at",
             "updated_at",
             "vote_count",
             "has_upvoted",
         )
         read_only_fields = ("question", "created_by", "is_accepted")
+
+    def get_created_by(self, obj: Answer) -> str:
+        if obj.is_anonymous:
+            return "Anonymous"
+        return obj.created_by.username
 
     def get_has_upvoted(self, obj: Answer) -> bool:
         request = self.context.get("request")
@@ -69,13 +75,13 @@ class AnswerCommentSerializer(serializers.ModelSerializer):
 class AnswerWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ("body",)
+        fields = ("body", "is_anonymous")
 
 
 class QuestionSerializer(serializers.ModelSerializer):
     tags = TagSummarySerializer(many=True, read_only=True)
     category = CategorySummarySerializer(read_only=True)
-    created_by = serializers.CharField(source="created_by.username", read_only=True)
+    created_by = serializers.SerializerMethodField()
     answers = AnswerSerializer(many=True, read_only=True)
     comments = QuestionCommentSerializer(many=True, read_only=True)
     vote_count = serializers.IntegerField(source="votes.count", read_only=True)
@@ -92,6 +98,7 @@ class QuestionSerializer(serializers.ModelSerializer):
             "category",
             "tags",
             "created_by",
+            "is_anonymous",
             "answers",
             "comments",
             "vote_count",
@@ -100,6 +107,11 @@ class QuestionSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+
+    def get_created_by(self, obj: Question) -> str:
+        if obj.is_anonymous:
+            return "Anonymous"
+        return obj.created_by.username
 
     def get_has_upvoted(self, obj: Question) -> bool:
         request = self.context.get("request")
@@ -127,7 +139,7 @@ class QuestionWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ("title", "body", "status", "tag_ids", "category_id")
+        fields = ("title", "body", "status", "tag_ids", "category_id", "is_anonymous")
 
     def validate_tag_ids(self, tags: list[Tag]) -> list[Tag]:
         if not tags:

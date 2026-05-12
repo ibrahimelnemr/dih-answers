@@ -68,6 +68,27 @@ def notify_answer_accepted(answer) -> None:
     _send(subject, body, [_user_email(answer.created_by)])
 
 
+def notify_champions_new_question(question) -> None:
+    """Notify all patrons of the question's category that a new question was posted."""
+    category = question.category
+    if not category:
+        return
+
+    patrons = category.patrons.exclude(pk=question.created_by_id)
+    if not patrons.exists():
+        return
+
+    subject = f"New question in {category.name}: {question.title}"
+    recipients = [_user_email(c) for c in patrons]
+    body = (
+        f"A new question was posted in {category.full_path}:\n\n"
+        f'"{question.title}"\n\n'
+        f"{question.body[:500]}\n\n"
+        f"View it at: {settings.FRONTEND_URL}/questions/{question.id}\n"
+    )
+    _send(subject, body, recipients)
+
+
 def _user_email(user) -> str:
     """Get user email, fallback to username@dih-answers.local."""
     return user.email or f"{user.username}@dih-answers.local"

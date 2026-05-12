@@ -5,10 +5,12 @@ import AppLayout from "./components/AppLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminSQLPage from "./pages/AdminSQLPage";
 import AskQuestionPage from "./pages/AskQuestionPage";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import QuestionDetailPage from "./pages/QuestionDetailPage";
 import QuestionsPage from "./pages/QuestionsPage";
 import SmokePage from "./pages/SmokePage";
+import UserProfilePage from "./pages/UserProfilePage";
 
 export default function App() {
   return (
@@ -24,9 +26,11 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<QuestionsPage />} />
+          <Route index element={<HomePage />} />
+          <Route path="questions" element={<QuestionsPage />} />
           <Route path="questions/:id" element={<QuestionDetailPage />} />
           <Route path="ask" element={<AskQuestionPage />} />
+          <Route path="users/:username" element={<UserProfilePage />} />
           <Route path="admin/sql" element={<AdminSQLPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

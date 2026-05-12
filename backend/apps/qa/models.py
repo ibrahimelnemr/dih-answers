@@ -27,6 +27,7 @@ class Question(TimeStampedModel):
         on_delete=models.PROTECT,
         related_name="questions",
     )
+    is_anonymous = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("-created_at",)
@@ -72,6 +73,7 @@ class Answer(TimeStampedModel):
         related_name="answers",
     )
     is_accepted = models.BooleanField(default=False)
+    is_anonymous = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("created_at",)
