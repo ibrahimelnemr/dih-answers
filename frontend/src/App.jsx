@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import QuestionDetailPage from "./pages/QuestionDetailPage";
 import QuestionsPage from "./pages/QuestionsPage";
+import SettingsPage from "./pages/SettingsPage";
 import SmokePage from "./pages/SmokePage";
 import UserProfilePage from "./pages/UserProfilePage";
 
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="questions" element={<QuestionsPage />} />
           <Route path="questions/:id" element={<QuestionDetailPage />} />
           <Route path="ask" element={<AskQuestionPage />} />
+          <Route path="settings" element={<SettingsPage />} />
           <Route path="users/:username" element={<UserProfilePage />} />
           <Route path="admin/sql" element={<AdminSQLPage />} />
         </Route>

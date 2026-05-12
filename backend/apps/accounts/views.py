@@ -54,7 +54,25 @@ class MeView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        return Response(MeSerializer.from_user(request.user), status=status.HTTP_200_OK)
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        return Response(MeSerializer.from_user(request.user, bio=profile.bio), status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        """Update current user's profile (bio, first_name, last_name, email)."""
+        user = request.user
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+
+        allowed_user_fields = {"first_name", "last_name", "email"}
+        for field in allowed_user_fields:
+            if field in request.data:
+                setattr(user, field, request.data[field])
+        user.save(update_fields=[f for f in allowed_user_fields if f in request.data])
+
+        if "bio" in request.data:
+            profile.bio = request.data["bio"]
+            profile.save(update_fields=["bio"])
+
+        return Response(MeSerializer.from_user(user, bio=profile.bio), status=status.HTTP_200_OK)
 
 
 class LeaderboardView(generics.ListAPIView):

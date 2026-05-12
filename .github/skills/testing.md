@@ -70,11 +70,27 @@ cd frontend && pnpm exec playwright test
 - Stop the dev servers.
 - Push commits to `main` branch.
 - Wait for Render auto-deploy to complete.
-- Verify both backend and frontend are live and healthy by checking:
-  - `https://dih-answers-backend.onrender.com/health` returns `{"status":"ok"}`
-  - `https://dih-answers-frontend.onrender.com/health` returns `{"status":"ok"}`
-- Test the deployed frontend at `https://dih-answers-frontend.onrender.com/` with admin/admin credentials.
+- Verify both backend and frontend are live using the deployed-testing procedure below.
 - Mark the task as complete.
+
+## Deployed testing procedure (Render free tier)
+The free-tier backend sleeps after inactivity. The frontend does NOT ping the backend automatically — instead it shows a link for the user to wake it up. Follow these steps:
+
+1. **Open the frontend** at `https://dih-answers-frontend.onrender.com/`.
+2. If the backend is asleep, the login page will show a "Check Backend Health" link pointing to `https://dih-answers-backend.onrender.com/health`.
+3. **Open the health endpoint** in a new browser tab. Wait until you see `{"status":"ok"}` (may take 30–60 seconds on first cold start).
+4. **Go back to the frontend** tab and click "Retry connection" (or reload the page).
+5. The login form should now appear. Sign in with `admin`/`admin` and verify features work.
+6. Confirm the home page loads with categories and leaderboard.
+
+When using browser tools in Copilot:
+```
+1. open_browser_page → https://dih-answers-backend.onrender.com/health
+2. Wait / reload until the page shows {"status":"ok"}
+3. open_browser_page → https://dih-answers-frontend.onrender.com/
+4. The login form should be visible. Fill in admin/admin and sign in.
+5. Verify the home page, questions, and other features.
+```
 
 ## Rules
 - Never skip E2E testing for user-facing changes.

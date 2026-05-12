@@ -131,3 +131,14 @@ export function togglePatron(categoryId) {
 export function fetchUserProfile(username) {
   return request(`/auth/users/${username}`);
 }
+
+export function updateMyProfile(data) {
+  return request("/auth/me", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export function fetchMyProfile() {
+  return request("/auth/me");
+}

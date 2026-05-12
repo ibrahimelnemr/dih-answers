@@ -69,14 +69,3 @@ export function logout() {
 export function me() {
   return request("/auth/me");
 }
-
-export async function checkBackendHealth() {
-  try {
-    const res = await fetch(`${BACKEND_URL}/health`, {
-      method: "GET",
-    });
-    return res.status === 200;
-  } catch {
-    return false;
-  }
-}

@@ -49,8 +49,8 @@ class MeSerializer(serializers.Serializer):
     is_staff = serializers.BooleanField(read_only=True)
 
     @staticmethod
-    def from_user(user) -> dict:
-        return {
+    def from_user(user, bio: str | None = None) -> dict:
+        data = {
             "id": user.id,
             "username": user.username,
             "email": user.email,
@@ -58,6 +58,9 @@ class MeSerializer(serializers.Serializer):
             "last_name": user.last_name,
             "is_staff": user.is_staff,
         }
+        if bio is not None:
+            data["bio"] = bio
+        return data
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

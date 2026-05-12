@@ -49,7 +49,12 @@ export default function AppLayout() {
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="text-slate-400 text-sm hidden sm:block">{user?.username}</span>
+              <Link
+                to="/settings"
+                className="text-slate-400 text-sm hidden sm:block hover:text-white transition-colors"
+              >
+                ⚙ {user?.username}
+              </Link>
               <button
                 type="button"
                 onClick={signOut}

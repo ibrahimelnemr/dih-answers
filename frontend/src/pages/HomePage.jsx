@@ -8,16 +8,34 @@ const CATEGORY_ICONS = {
   customer: "👥",
   internal: "🔧",
   cloud: "☁️",
-  "ai-data": "🤖",
+  "ai-and-data": "🤖",
 };
 
+function PatronBadge({ topic, currentUser, onToggle }) {
+  const isPatron = topic.patrons?.some((p) => p.username === currentUser?.username);
+  return (
+    <button
+      type="button"
+      onClick={(e) => { e.stopPropagation(); onToggle(topic.id); }}
+      className={`shrink-0 px-2 py-0.5 text-xs font-medium rounded-full border transition-all ${
+        isPatron
+          ? "bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100"
+          : "bg-gray-50 text-gray-400 border-gray-200 hover:border-blue-300 hover:text-blue-600"
+      }`}
+      title={isPatron ? "Leave as patron" : "Become a patron"}
+    >
+      {isPatron ? "★" : "☆"}
+    </button>
+  );
+}
+
 function CategoryCard({ category, currentUser, onTogglePatron }) {
+  const [expanded, setExpanded] = useState(false);
   const icon = CATEGORY_ICONS[category.slug] || "📂";
-  const isPatron = category.patrons?.some((p) => p.username === currentUser?.username);
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start justify-between mb-2">
         <Link
           to={`/questions?category=${category.slug}`}
           className="flex items-center gap-2 text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors"
@@ -25,27 +43,24 @@ function CategoryCard({ category, currentUser, onTogglePatron }) {
           <span className="text-xl">{icon}</span>
           {category.name}
         </Link>
-        <button
-          type="button"
-          onClick={() => onTogglePatron(category.id)}
-          className={`px-3 py-1 text-xs font-medium rounded-full border transition-all shrink-0 ${
-            isPatron
-              ? "bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100"
-              : "bg-gray-50 text-gray-500 border-gray-200 hover:border-blue-300 hover:text-blue-600"
-          }`}
-          title={isPatron ? "Leave as patron" : "Become a patron"}
-        >
-          {isPatron ? "★ Patron" : "☆ Become Patron"}
-        </button>
+        {category.children?.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setExpanded(!expanded)}
+            className="text-xs text-blue-600 hover:text-blue-800 font-medium shrink-0"
+          >
+            {expanded ? "Collapse" : `${category.children.length} areas ▾`}
+          </button>
+        )}
       </div>
 
       {category.description && (
         <p className="text-sm text-gray-500 mb-3">{category.description}</p>
       )}
 
-      {/* Subcategories */}
-      {category.children?.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-3">
+      {/* Collapsed: show specialization chips */}
+      {!expanded && category.children?.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
           {category.children.map((child) => (
             <Link
               key={child.id}
@@ -58,21 +73,32 @@ function CategoryCard({ category, currentUser, onTogglePatron }) {
         </div>
       )}
 
-      {/* Patrons */}
-      {category.patrons?.length > 0 && (
-        <div className="flex items-center gap-1.5 text-xs text-gray-400 flex-wrap">
-          <span className="text-amber-600 font-medium">🏅 Patrons:</span>
-          {category.patrons.map((p) => (
-            <Link
-              key={p.id}
-              to={`/users/${p.username}`}
-              className="text-blue-500 hover:text-blue-700"
-            >
-              {p.username}
-            </Link>
-          ))}
+      {/* Expanded: show specializations with their leaf topics */}
+      {expanded && category.children?.map((spec) => (
+        <div key={spec.id} className="mt-3 first:mt-2">
+          <Link
+            to={`/questions?category=${spec.slug}`}
+            className="text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors"
+          >
+            {spec.name}
+          </Link>
+          {spec.children?.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-1.5 ml-2">
+              {spec.children.map((topic) => (
+                <span key={topic.id} className="inline-flex items-center gap-1">
+                  <Link
+                    to={`/questions?category=${topic.slug}`}
+                    className="px-2 py-0.5 text-xs rounded bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                  >
+                    {topic.name}
+                  </Link>
+                  <PatronBadge topic={topic} currentUser={currentUser} onToggle={onTogglePatron} />
+                </span>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      ))}
     </div>
   );
 }

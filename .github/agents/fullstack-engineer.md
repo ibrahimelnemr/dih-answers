@@ -50,7 +50,10 @@ Apply these as practical guidelines in every task:
 
 ### Render deployment verification
 - After pushing to `main`, wait for Render auto-deploy to complete.
-- Verify health endpoints: `https://dih-answers-backend.onrender.com/health` and `https://dih-answers-frontend.onrender.com/health`.
-- Test the deployed frontend at `https://dih-answers-frontend.onrender.com/` — sign in with `admin`/`admin` and verify features work.
+- The frontend does NOT auto-ping the backend. Instead, open the backend health endpoint directly first.
+- **Step 1**: Open `https://dih-answers-backend.onrender.com/health` in a browser tab. Wait until it returns `{"status":"ok"}` (may take 30–60 seconds on cold start).
+- **Step 2**: Open `https://dih-answers-frontend.onrender.com/`. The login form should appear since the backend is now awake.
+- **Step 3**: Sign in with `admin`/`admin` and verify features work.
+- If the backend is asleep, the frontend login page shows a "Check Backend Health" link — click it to wake the backend.
 - The frontend uses relative URLs (`BACKEND_URL = ""`) so API requests go through the same-origin nginx proxy. Never change this to a cross-origin URL.
-- Free-tier cold starts can take 30-60 seconds. Use `--max-time 60` when curling health endpoints.
+- Never add cross-origin fetch calls to the backend from the frontend — CORS issues make this unreliable.

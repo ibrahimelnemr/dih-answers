@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { checkBackendHealth, ensureCsrfToken, login as loginRequest, logout as logoutRequest, me, register as registerRequest } from "./api";
+import { ensureCsrfToken, login as loginRequest, logout as logoutRequest, me, register as registerRequest } from "./api";
 
 const AuthContext = createContext(null);
 
@@ -12,44 +12,20 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let cancelled = false;
-    let pollTimer;
 
     async function bootstrap() {
-      const healthy = await checkBackendHealth();
-      if (cancelled) return;
-
-      if (!healthy) {
-        setBackendReady(false);
-        setLoading(false);
-
-        // Poll every 30 seconds until backend returns 200
-        pollTimer = setInterval(async () => {
-          const ok = await checkBackendHealth();
-          if (cancelled) return;
-          if (ok) {
-            clearInterval(pollTimer);
-            setBackendReady(true);
-            try {
-              await ensureCsrfToken();
-              const currentUser = await me();
-              if (!cancelled) setUser(currentUser);
-            } catch {
-              if (!cancelled) setUser(null);
-            } finally {
-              if (!cancelled) setLoading(false);
-            }
-          }
-        }, 30000);
-        return;
-      }
-
-      setBackendReady(true);
       try {
         await ensureCsrfToken();
         const currentUser = await me();
-        if (!cancelled) setUser(currentUser);
+        if (!cancelled) {
+          setBackendReady(true);
+          setUser(currentUser);
+        }
       } catch {
-        if (!cancelled) setUser(null);
+        if (!cancelled) {
+          setBackendReady(false);
+          setUser(null);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -57,10 +33,7 @@ export function AuthProvider({ children }) {
 
     bootstrap();
 
-    return () => {
-      cancelled = true;
-      if (pollTimer) clearInterval(pollTimer);
-    };
+    return () => { cancelled = true; };
   }, []);
 
   async function signIn(credentials) {

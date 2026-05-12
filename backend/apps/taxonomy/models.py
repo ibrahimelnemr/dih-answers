@@ -70,7 +70,10 @@ class Category(TimeStampedModel):
         parts: list[str] = []
         current: Category | None = self
         while current:
-            parts.append(slugify(current.name))
+            # Replace / and . with - before slugifying so
+            # "UI/UX" → "ui-ux", "Vue.js" → "vue-js", etc.
+            name = current.name.replace("/", "-").replace(".", "-")
+            parts.append(slugify(name))
             current = current.parent
         return ".".join(reversed(parts))
 

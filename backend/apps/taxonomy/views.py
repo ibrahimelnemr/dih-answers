@@ -70,7 +70,7 @@ User = get_user_model()
 
 
 class CategoryPatronView(APIView):
-    """Toggle patron status for the current user on a category."""
+    """Toggle patron status for the current user on a leaf category only."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
@@ -78,6 +78,12 @@ class CategoryPatronView(APIView):
             category = Category.objects.get(pk=pk)
         except Category.DoesNotExist:
             return Response({"detail": "Category not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if not category.is_leaf:
+            return Response(
+                {"detail": "Patron status can only be toggled on specific topics (leaf categories)."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         user = request.user
         if category.patrons.filter(pk=user.pk).exists():

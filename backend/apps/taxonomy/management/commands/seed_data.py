@@ -10,7 +10,7 @@ from apps.taxonomy.models import Category
 
 User = get_user_model()
 
-OFFERINGS = ["customer", "internal", "cloud", "ai-data"]
+OFFERINGS = ["customer", "internal", "cloud", "ai-and-data"]
 
 SPECIALIZATIONS: dict[str, list[str]] = {
     "customer": [
@@ -43,7 +43,7 @@ SPECIALIZATIONS: dict[str, list[str]] = {
         "cloud-security",
         "cost-optimization",
     ],
-    "ai-data": [
+    "ai-and-data": [
         "genai-development",
         "machine-learning",
         "data-engineering",
@@ -56,59 +56,169 @@ SPECIALIZATIONS: dict[str, list[str]] = {
 }
 
 TOPICS: dict[str, list[str]] = {
+    # Shared across customer/internal fullstack
     "fullstack-development": [
-        "java",
-        "python",
-        "javascript",
-        "typescript",
-        "react",
-        "angular",
-        "vue-js",
-        "node-js",
-        "spring-boot",
-        "django",
-        "fastapi",
-        "next-js",
-        "express-js",
+        "java", "python", "javascript", "typescript", "react", "angular",
+        "vue-js", "node-js", "spring-boot", "django", "fastapi", "next-js",
     ],
-    "machine-learning": [
-        "python",
-        "tensorflow",
-        "pytorch",
-        "scikit-learn",
-        "keras",
-        "xgboost",
-        "neural-networks",
-        "deep-learning",
-        "model-training",
-        "feature-engineering",
+    "backend-development": [
+        "java", "python", "go", "rust", "node-js", "spring-boot", "django",
+        "fastapi", "express-js", "graphql", "rest-api",
+    ],
+    "frontend-development": [
+        "react", "angular", "vue-js", "svelte", "next-js", "tailwind-css",
+        "typescript", "html-css", "web-accessibility",
+    ],
+    "mobile-app-development": [
+        "react-native", "flutter", "swift", "kotlin", "ios", "android",
+    ],
+    "devops": [
+        "docker", "kubernetes", "ci-cd", "github-actions", "jenkins",
+        "ansible", "monitoring", "logging",
+    ],
+    "qa-testing": [
+        "selenium", "playwright", "jest", "pytest", "cypress",
+        "load-testing", "test-automation",
+    ],
+    "ui-ux-design": [
+        "figma", "design-systems", "user-research", "prototyping",
+        "accessibility", "responsive-design",
+    ],
+    "technical-support": [
+        "troubleshooting", "documentation", "ticketing-systems",
+        "knowledge-base", "customer-communication",
+    ],
+    "data-engineering": [
+        "apache-spark", "airflow", "kafka", "dbt", "snowflake",
+        "bigquery", "etl-pipelines", "data-warehousing",
+    ],
+    "infrastructure": [
+        "linux", "networking", "dns", "load-balancing", "databases",
+        "postgresql", "redis", "message-queues",
     ],
     "security": [
-        "authentication",
-        "authorization",
-        "oauth",
-        "jwt",
-        "encryption",
-        "penetration-testing",
-        "security-auditing",
+        "authentication", "authorization", "oauth", "jwt", "encryption",
+        "penetration-testing", "security-auditing",
     ],
+    "project-management": [
+        "agile", "scrum", "kanban", "jira", "sprint-planning",
+        "technical-debt",
+    ],
+    # Cloud specializations
     "cloud-architecture": [
-        "aws",
-        "azure",
-        "gcp",
-        "terraform",
-        "cloudformation",
-        "architecture-design",
-        "microservices",
-        "serverless",
-        "high-availability",
-        "scalability",
+        "aws", "azure", "gcp", "terraform", "cloudformation",
+        "microservices", "high-availability", "scalability",
+    ],
+    "cloud-migration": [
+        "lift-and-shift", "re-architecture", "hybrid-cloud",
+        "data-migration", "cost-analysis",
+    ],
+    "infrastructure-as-code": [
+        "terraform", "pulumi", "cloudformation", "ansible", "cdk",
+    ],
+    "serverless": [
+        "aws-lambda", "azure-functions", "gcp-cloud-functions",
+        "api-gateway", "event-driven",
+    ],
+    "container-orchestration": [
+        "kubernetes", "docker-swarm", "ecs", "eks", "helm",
+        "service-mesh",
+    ],
+    "cloud-security": [
+        "iam", "vpc", "waf", "secrets-management", "compliance",
+        "zero-trust",
+    ],
+    "cost-optimization": [
+        "reserved-instances", "spot-instances", "right-sizing",
+        "cost-explorer", "budgets",
+    ],
+    # AI and Data specializations
+    "genai-development": [
+        "langchain", "llm-fine-tuning", "prompt-engineering", "rag",
+        "openai-api", "hugging-face", "vector-databases",
+    ],
+    "machine-learning": [
+        "pytorch", "tensorflow", "scikit-learn", "xgboost",
+        "neural-networks", "deep-learning", "feature-engineering",
+    ],
+    "data-science": [
+        "pandas", "numpy", "jupyter", "statistical-modeling",
+        "a-b-testing", "visualization",
+    ],
+    "data-analytics": [
+        "sql", "tableau", "power-bi", "metabase", "looker",
+        "data-visualization",
+    ],
+    "mlops": [
+        "mlflow", "kubeflow", "model-serving", "experiment-tracking",
+        "model-monitoring", "feature-stores",
+    ],
+    "nlp": [
+        "transformers", "text-classification", "named-entity-recognition",
+        "sentiment-analysis", "text-generation", "embeddings",
+    ],
+    "computer-vision": [
+        "opencv", "image-classification", "object-detection", "yolo",
+        "image-segmentation", "video-analysis",
     ],
 }
 
 
+_DISPLAY_OVERRIDES: dict[str, str] = {
+    "ai-and-data": "AI and Data",
+    "genai-development": "GenAI Development",
+    "qa-testing": "QA Testing",
+    "ui-ux-design": "UI/UX Design",
+    "devops": "DevOps",
+    "mlops": "MLOps",
+    "nlp": "NLP",
+    "ci-cd": "CI/CD",
+    "aws": "AWS",
+    "gcp": "GCP",
+    "iam": "IAM",
+    "vpc": "VPC",
+    "waf": "WAF",
+    "cdk": "CDK",
+    "ecs": "ECS",
+    "eks": "EKS",
+    "dns": "DNS",
+    "sql": "SQL",
+    "jwt": "JWT",
+    "oauth": "OAuth",
+    "rest-api": "REST API",
+    "graphql": "GraphQL",
+    "html-css": "HTML/CSS",
+    "a-b-testing": "A/B Testing",
+    "dbt": "dbt",
+    "etl-pipelines": "ETL Pipelines",
+    "openai-api": "OpenAI API",
+    "rag": "RAG",
+    "llm-fine-tuning": "LLM Fine-Tuning",
+    "ios": "iOS",
+    "yolo": "YOLO",
+    "vue-js": "Vue.js",
+    "node-js": "Node.js",
+    "next-js": "Next.js",
+    "express-js": "Express.js",
+    "tailwind-css": "Tailwind CSS",
+    "react-native": "React Native",
+    "spring-boot": "Spring Boot",
+    "scikit-learn": "scikit-learn",
+    "xgboost": "XGBoost",
+    "pytorch": "PyTorch",
+    "tensorflow": "TensorFlow",
+    "langchain": "LangChain",
+    "hugging-face": "Hugging Face",
+    "apache-spark": "Apache Spark",
+    "power-bi": "Power BI",
+    "opencv": "OpenCV",
+}
+
+
 def _display(slug: str) -> str:
-    """Convert a slug like 'fullstack-development' to 'Fullstack Development'."""
+    """Convert a slug to a display name, with special-case overrides."""
+    if slug in _DISPLAY_OVERRIDES:
+        return _DISPLAY_OVERRIDES[slug]
     return slug.replace("-", " ").title()
 
 
@@ -233,7 +343,7 @@ SAMPLE_QUESTIONS: list[dict] = [
     },
     # AI & Data
     {
-        "category_slug": "ai-data.machine-learning.pytorch",
+        "category_slug": "ai-and-data.machine-learning.pytorch",
         "title": "Fine-tuning a pre-trained transformer for classification",
         "body": (
             "I'm fine-tuning a BERT model on a small labeled dataset (~5k samples). "
@@ -243,7 +353,7 @@ SAMPLE_QUESTIONS: list[dict] = [
         "author": "frank",
     },
     {
-        "category_slug": "ai-data.genai-development",
+        "category_slug": "ai-and-data.genai-development",
         "title": "RAG pipeline latency — how to get under 2 seconds?",
         "body": (
             "Our retrieval-augmented generation pipeline takes 4-5 seconds per query. "
@@ -253,19 +363,19 @@ SAMPLE_QUESTIONS: list[dict] = [
         "author": "charlie",
     },
     {
-        "category_slug": "ai-data.data-analytics",
+        "category_slug": "ai-and-data.data-analytics",
         "title": "Best dashboarding tool for a small team?",
         "body": "We need a BI tool for ~10 users. Comparing Metabase, Superset, and Looker Studio. What do you recommend?",
         "author": "alice",
     },
     {
-        "category_slug": "ai-data.data-engineering",
+        "category_slug": "ai-and-data.data-engineering",
         "title": "dbt vs custom SQL for data transformations?",
         "body": "Our analytics team debates using dbt. The warehouse is Snowflake. Is it worth the learning curve for a team of 3?",
         "author": "bob",
     },
     {
-        "category_slug": "ai-data.nlp",
+        "category_slug": "ai-and-data.nlp",
         "title": "Choosing between OpenAI embeddings and open-source alternatives",
         "body": "We need embeddings for semantic search. OpenAI's ada-002 is easy but costly at scale. Are open-source models like E5 or BGE competitive?",
         "author": "eve",
@@ -379,14 +489,43 @@ DEMO_USERS = [
     {"username": "newbie", "email": "newbie@dih-answers.com", "password": "newbie1234", "bio": "Just joined the company!", "reputation": 5},
 ]
 
-# Patron assignments (username -> list of category slugs)
+# Patron assignments (username -> list of leaf category slugs only)
 PATRON_ASSIGNMENTS = {
-    "helper": ["customer", "internal"],
-    "alice": ["customer.frontend-development"],
-    "bob": ["cloud", "internal.devops"],
-    "charlie": ["customer.fullstack-development", "ai-data.genai-development"],
-    "eve": ["internal.security", "ai-data.machine-learning"],
-    "frank": ["cloud.cloud-architecture", "ai-data.data-engineering", "internal.data-engineering"],
+    "alice": [
+        "customer.frontend-development.react",
+        "customer.frontend-development.typescript",
+        "customer.ui-ux-design.figma",
+    ],
+    "bob": [
+        "cloud.cloud-architecture.aws",
+        "cloud.cloud-architecture.terraform",
+        "internal.devops.kubernetes",
+        "internal.devops.docker",
+    ],
+    "charlie": [
+        "customer.fullstack-development.django",
+        "customer.fullstack-development.react",
+        "ai-and-data.genai-development.rag",
+        "ai-and-data.genai-development.langchain",
+    ],
+    "eve": [
+        "internal.security.jwt",
+        "internal.security.oauth",
+        "ai-and-data.machine-learning.pytorch",
+        "ai-and-data.nlp.transformers",
+    ],
+    "frank": [
+        "cloud.cloud-architecture.aws",
+        "cloud.cloud-architecture.gcp",
+        "ai-and-data.data-engineering.apache-spark",
+        "ai-and-data.data-engineering.airflow",
+        "internal.data-engineering.dbt",
+    ],
+    "helper": [
+        "customer.backend-development.java",
+        "customer.backend-development.python",
+        "internal.infrastructure.postgresql",
+    ],
 }
 
 
@@ -420,7 +559,7 @@ class Command(BaseCommand):
             "customer": "Questions related to customer-facing products and services.",
             "internal": "Questions about internal tools, processes, and infrastructure.",
             "cloud": "Questions about cloud architecture, migration, and operations.",
-            "ai-data": "Questions about AI, machine learning, and data engineering.",
+            "ai-and-data": "Questions about AI, machine learning, and data engineering.",
         }
         for offering in OFFERINGS:
             root, c = Category.objects.get_or_create(
