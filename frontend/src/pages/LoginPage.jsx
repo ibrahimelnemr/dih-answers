@@ -50,28 +50,35 @@ export default function LoginPage() {
             <div className="flex justify-center mb-4">
               <div className="animate-spin w-10 h-10 border-4 border-blue-400/30 border-t-blue-400 rounded-full" />
             </div>
-            <h2 className="text-lg font-semibold text-white mb-2">Backend is starting up...</h2>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              The backend server may be asleep on the free tier. Click the link below to wake it up, then come back and retry.
+            <h2 className="text-lg font-semibold text-white mb-2">Services are starting up...</h2>
+            <p className="text-slate-400 text-sm leading-relaxed mb-6">
+              Free-tier services may be asleep. Wake them up, then retry.
             </p>
-            <a
-              href="https://dih-answers-backend.onrender.com/health"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-all shadow-lg shadow-blue-600/25 mb-3"
-            >
-              Check Backend Health ↗
-            </a>
-            <p className="text-slate-500 text-xs mb-4">
-              Wait until you see <code className="text-blue-400">{`{"status":"ok"}`}</code> in the new tab, then click retry.
-            </p>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="text-sm text-blue-400 hover:text-blue-300 underline transition-colors"
-            >
-              Retry connection
-            </button>
+            <div className="flex flex-col gap-3">
+              <a
+                href="https://dih-answers-backend.onrender.com/health"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-all shadow-lg shadow-blue-600/25 text-center"
+              >
+                Wake Up Backend ↗
+              </a>
+              <a
+                href="https://mailpit-o5ht.onrender.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-all shadow-lg shadow-emerald-600/25 text-center"
+              >
+                Wake Up Mailpit ↗
+              </a>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="w-full px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg transition-all border border-white/20"
+              >
+                Retry Connection
+              </button>
+            </div>
           </div>
         ) : (
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
