@@ -12,9 +12,11 @@ import QuestionsPage from "./pages/QuestionsPage";
 import SettingsPage from "./pages/SettingsPage";
 import SmokePage from "./pages/SmokePage";
 import UserProfilePage from "./pages/UserProfilePage";
+import { ThemeProvider } from "./theme/ThemeContext";
 
 export default function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <Routes>
         <Route path="/smoke" element={<SmokePage />} />
@@ -38,5 +40,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>
+    </ThemeProvider>
   );
 }

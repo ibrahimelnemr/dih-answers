@@ -113,7 +113,7 @@ class QuestionListCreateView(generics.ListCreateAPIView):
         return queryset.order_by("-created_at")
 
 
-class QuestionDetailView(generics.RetrieveUpdateAPIView):
+class QuestionDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = (
         Question.objects.select_related("created_by", "category")
         .prefetch_related("tags", "answers", "comments", "answers__comments", "votes")

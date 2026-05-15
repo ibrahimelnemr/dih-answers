@@ -1,8 +1,44 @@
 @import "tailwindcss";
 
-body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+@theme {
+  --color-brand-50: #f4fae6;
+  --color-brand-100: #e6f5c3;
+  --color-brand-200: #c9ea82;
+  --color-brand-300: #a8db44;
+  --color-brand-400: #96c92e;
+  --color-brand-500: #86BC25;
+  --color-brand-600: #6f9e1e;
+  --color-brand-700: #587f18;
+  --color-brand-800: #446112;
+  --color-brand-900: #2f430d;
 }
+
+body {
+  @apply bg-gray-50 text-gray-900 antialiased transition-colors duration-200;
+}
+
+.dark body,
+:root.dark body {
+  @apply bg-gray-950 text-gray-100;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn { animation: fadeIn 0.25s ease-out both; }
+.animate-slideDown { animation: slideDown 0.2s ease-out both; }
+.animate-scaleIn { animation: scaleIn 0.2s ease-out both; }
 
 .header-right {
   display: flex;
@@ -57,7 +93,7 @@ main {
 }
 
 .button {
-  background: #2563eb;
+  background: #86BC25;
   color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 8px;

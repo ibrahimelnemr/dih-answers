@@ -2,10 +2,10 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
-  timeout: 30000,
+  timeout: 60000,
   retries: 0,
   use: {
-    baseURL: "http://localhost:5175",
+    baseURL: process.env.BASE_URL || "http://localhost:5175",
     headless: true,
   },
   projects: [

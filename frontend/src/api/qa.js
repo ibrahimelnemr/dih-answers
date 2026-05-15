@@ -79,6 +79,19 @@ export function createQuestion(payload) {
   });
 }
 
+export function updateQuestion(id, payload) {
+  return request(`/questions/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteQuestion(id) {
+  return request(`/questions/${id}`, {
+    method: "DELETE",
+  });
+}
+
 export function createAnswer(questionId, body, isAnonymous = false) {
   return request(`/questions/${questionId}/answers`, {
     method: "POST",

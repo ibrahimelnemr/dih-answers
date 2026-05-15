@@ -19,10 +19,10 @@ function CategoryNode({ category, selectedSlug, onSelect, depth = 0 }) {
         }}
         className={`w-full text-left px-3 py-1.5 text-sm rounded-md flex items-center gap-1.5 transition-colors ${
           isSelected
-            ? "bg-blue-50 text-blue-700 font-medium"
+            ? "bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 font-medium"
             : isAncestor
-            ? "text-blue-600"
-            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+            ? "text-brand-600 dark:text-brand-400"
+            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
         }`}
         style={{ paddingLeft: `${depth * 16 + 12}px` }}
       >
@@ -63,20 +63,20 @@ function QuestionCard({ question }) {
   return (
     <Link
       to={`/questions/${question.id}`}
-      className="block bg-white border border-gray-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition-all group"
+      className="block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-md transition-all group animate-fadeIn"
     >
       <div className="flex gap-4">
         <div className="flex flex-col items-center gap-2 text-center min-w-[60px]">
           <div className="text-sm">
-            <span className="font-semibold text-gray-900">{question.vote_count ?? 0}</span>
-            <p className="text-xs text-gray-500">votes</p>
+            <span className="font-semibold text-gray-900 dark:text-white">{question.vote_count ?? 0}</span>
+            <p className="text-xs text-gray-500 dark:text-gray-400">votes</p>
           </div>
           <div className={`text-sm px-2 py-0.5 rounded ${
             hasAccepted
-              ? "bg-green-100 text-green-700 border border-green-200"
+              ? "bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 border border-brand-200 dark:border-brand-800"
               : question.answer_count > 0
-              ? "bg-gray-100 text-gray-700"
-              : "text-gray-400"
+              ? "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+              : "text-gray-400 dark:text-gray-500"
           }`}>
             <span className="font-semibold">{question.answer_count ?? 0}</span>
             <p className="text-xs">{question.answer_count === 1 ? "answer" : "answers"}</p>
@@ -84,30 +84,30 @@ function QuestionCard({ question }) {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-blue-700 group-hover:text-blue-800 mb-1 line-clamp-2">
+          <h3 className="text-base font-semibold text-brand-700 dark:text-brand-400 group-hover:text-brand-800 dark:group-hover:text-brand-300 mb-1 line-clamp-2">
             {question.title}
           </h3>
-          <p className="text-sm text-gray-500 line-clamp-2 mb-3">{question.body}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">{question.body}</p>
 
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
               {question.category && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 border border-brand-100 dark:border-brand-800">
                   {question.category.full_path}
                 </span>
               )}
               {question.tags?.map((tag) => (
                 <span
                   key={tag.id}
-                  className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-600"
+                  className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
                 >
                   {tag.name}
                 </span>
               ))}
             </div>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 dark:text-gray-500">
               by {question.created_by === "Anonymous" ? "Anonymous" : (
-                <Link to={`/users/${question.created_by}`} className="text-blue-500 hover:text-blue-700" onClick={(e) => e.stopPropagation()}>{question.created_by}</Link>
+                <Link to={`/users/${question.created_by}`} className="text-brand-500 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300" onClick={(e) => e.stopPropagation()}>{question.created_by}</Link>
               )}
             </span>
           </div>
@@ -146,15 +146,15 @@ export default function QuestionsPage() {
       {/* Category sidebar */}
       <aside className="hidden lg:block w-64 shrink-0">
         <div className="sticky top-24">
-          <div className="bg-white border border-gray-200 rounded-xl p-4">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">Categories</h3>
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wider">Categories</h3>
             <button
               type="button"
               onClick={() => setSelectedCategorySlug(null)}
               className={`w-full text-left px-3 py-1.5 text-sm rounded-md mb-1 transition-colors ${
                 !selectedCategorySlug
-                  ? "bg-blue-50 text-blue-700 font-medium"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 font-medium"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
               }`}
             >
               All Questions
@@ -175,12 +175,12 @@ export default function QuestionsPage() {
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Questions</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Browse questions or ask your own</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Questions</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Browse questions or ask your own</p>
           </div>
           <Link
             to="/ask"
-            className="inline-flex items-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
+            className="inline-flex items-center px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
           >
             Ask a Question
           </Link>
@@ -202,7 +202,7 @@ export default function QuestionsPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search questions..."
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -212,7 +212,7 @@ export default function QuestionsPage() {
           <select
             value={selectedCategorySlug || ""}
             onChange={(e) => setSelectedCategorySlug(e.target.value || null)}
-            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm"
+            className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white"
           >
             <option value="">All Categories</option>
             {categoryTree.map((cat) => (
@@ -228,21 +228,21 @@ export default function QuestionsPage() {
         </div>
 
         {error && (
-          <p className="text-red-600 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-2 mb-4">
+          <p className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg px-4 py-2 mb-4">
             {error}
           </p>
         )}
 
         {loading && (
           <div className="flex items-center justify-center py-16">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full" />
+            <div className="animate-spin w-8 h-8 border-4 border-brand-200 border-t-brand-600 rounded-full" />
           </div>
         )}
 
         {!loading && questions.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-gray-400 text-lg">No questions found</p>
-            <p className="text-gray-400 text-sm mt-1">Be the first to ask one!</p>
+            <p className="text-gray-400 dark:text-gray-500 text-lg">No questions found</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Be the first to ask one!</p>
           </div>
         )}
 

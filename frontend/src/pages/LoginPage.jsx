@@ -38,20 +38,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white tracking-tight">DIH Champions</h1>
-          <p className="text-slate-400 mt-1">Internal knowledge platform</p>
+          <p className="text-gray-400 mt-1">Internal knowledge platform</p>
         </div>
 
         {backendStarting ? (
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl text-center">
             <div className="flex justify-center mb-4">
-              <div className="animate-spin w-10 h-10 border-4 border-blue-400/30 border-t-blue-400 rounded-full" />
+              <div className="animate-spin w-10 h-10 border-4 border-brand-400/30 border-t-brand-400 rounded-full" />
             </div>
             <h2 className="text-lg font-semibold text-white mb-2">Services are starting up...</h2>
-            <p className="text-slate-400 text-sm leading-relaxed mb-6">
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Free-tier services may be asleep. Wake them up, then retry.
             </p>
             <div className="flex flex-col gap-3">
@@ -59,7 +59,7 @@ export default function LoginPage() {
                 href="https://dih-answers-backend.onrender.com/health"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-all shadow-lg shadow-blue-600/25 text-center"
+                className="w-full px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-lg transition-all shadow-lg shadow-brand-600/25 text-center"
               >
                 Wake Up Backend ↗
               </a>
@@ -88,7 +88,7 @@ export default function LoginPage() {
               onClick={() => { setMode("login"); setError(""); }}
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
                 !isSignUp
-                  ? "bg-blue-600 text-white shadow-sm"
+                  ? "bg-brand-600 text-white shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -99,7 +99,7 @@ export default function LoginPage() {
               onClick={() => { setMode("signup"); setError(""); }}
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
                 isSignUp
-                  ? "bg-blue-600 text-white shadow-sm"
+                  ? "bg-brand-600 text-white shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -109,7 +109,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1">
                 Username
               </label>
               <input
@@ -117,14 +117,14 @@ export default function LoginPage() {
                 value={form.username}
                 onChange={(e) => setForm((prev) => ({ ...prev, username: e.target.value }))}
                 required
-                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
                 placeholder="Enter username"
               />
             </div>
 
             {isSignUp && (
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
                   Email
                 </label>
                 <input
@@ -133,14 +133,14 @@ export default function LoginPage() {
                   value={form.email}
                   onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
                   required
-                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
                   placeholder="you@example.com"
                 />
               </div>
             )}
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
                 Password
               </label>
               <input
@@ -149,7 +149,7 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
                 required
-                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
                 placeholder={isSignUp ? "Min 8 characters" : "Enter password"}
               />
             </div>
@@ -163,7 +163,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all shadow-lg shadow-blue-600/25"
+              className="w-full py-2.5 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all shadow-lg shadow-brand-600/25"
             >
               {submitting
                 ? (isSignUp ? "Creating account..." : "Signing in...")

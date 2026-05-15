@@ -9,15 +9,15 @@ export default function ProtectedRoute({ children }) {
   if (loading || backendReady === null) {
     const isStarting = backendReady === false;
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
-        <div className="animate-spin w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-200 border-t-brand-600 rounded-full" />
         {isStarting && (
           <div className="mt-6 flex flex-col gap-3 w-64">
             <a
               href="https://dih-answers-backend.onrender.com/health"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-all text-center text-sm"
+              className="w-full px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-lg transition-all text-center text-sm"
             >
               Wake Up Backend ↗
             </a>

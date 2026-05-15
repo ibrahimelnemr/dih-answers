@@ -53,50 +53,50 @@ export default function AskQuestionPage() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Ask a Question</h1>
-        <p className="text-sm text-gray-500 mt-1">Get help from the community</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ask a Question</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Get help from the community</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <label htmlFor="title" className="block text-sm font-semibold text-gray-900 mb-2">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+          <label htmlFor="title" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
             Title
           </label>
-          <p className="text-xs text-gray-500 mb-2">Be specific and imagine you're asking another person</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Be specific and imagine you're asking another person</p>
           <input
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. How to configure Spring Boot with PostgreSQL?"
-            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
           />
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <label htmlFor="body" className="block text-sm font-semibold text-gray-900 mb-2">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+          <label htmlFor="body" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
             Body
           </label>
-          <p className="text-xs text-gray-500 mb-2">Include all the information someone would need to answer your question</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Include all the information someone would need to answer your question</p>
           <textarea
             id="body"
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={8}
             placeholder="Describe your problem in detail..."
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
+            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-y"
           />
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <label htmlFor="category" className="block text-sm font-semibold text-gray-900 mb-2">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+          <label htmlFor="category" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
             Category
           </label>
-          <p className="text-xs text-gray-500 mb-2">Choose the most specific category for your question</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Choose the most specific category for your question</p>
           <select
             id="category"
             value={selectedCategoryId}
             onChange={(e) => setSelectedCategoryId(e.target.value)}
-            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
           >
             <option value="">Select a category (optional)</option>
             {leafCategories.map((cat) => (
@@ -108,9 +108,9 @@ export default function AskQuestionPage() {
         </div>
 
         {leafTags.length > 0 && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Tags</label>
-            <p className="text-xs text-gray-500 mb-3">Add tags to help others find your question (optional)</p>
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">Tags</label>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Add tags to help others find your question (optional)</p>
             <div className="flex flex-wrap gap-2">
               {leafTags.map((tag) => {
                 const isSelected = selectedTags.includes(tag.id);
@@ -121,8 +121,8 @@ export default function AskQuestionPage() {
                     onClick={() => toggleTag(tag.id)}
                     className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
                       isSelected
-                        ? "bg-blue-50 border-blue-300 text-blue-700"
-                        : "bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300"
+                        ? "bg-brand-50 dark:bg-brand-900/20 border-brand-300 dark:border-brand-700 text-brand-700 dark:text-brand-400"
+                        : "bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600"
                     }`}
                   >
                     {tag.path || tag.name}
@@ -134,22 +134,22 @@ export default function AskQuestionPage() {
         )}
 
         {error && (
-          <p className="text-red-600 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-2">
+          <p className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg px-4 py-2">
             {error}
           </p>
         )}
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={isAnonymous}
               onChange={(e) => setIsAnonymous(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-brand-600 focus:ring-brand-500"
             />
             <div>
-              <span className="text-sm font-semibold text-gray-900">Post anonymously</span>
-              <p className="text-xs text-gray-500">Your name will not be shown with this question</p>
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">Post anonymously</span>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Your name will not be shown with this question</p>
             </div>
           </label>
         </div>
@@ -158,7 +158,7 @@ export default function AskQuestionPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors shadow-sm"
+            className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors shadow-sm"
           >
             {loading ? "Posting..." : "Post Question"}
           </button>
